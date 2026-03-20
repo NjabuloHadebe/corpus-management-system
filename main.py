@@ -814,17 +814,15 @@ def corpus_stats():
 # SERVE FRONTEND
 # ══════════════════════════════════════════════════════════════════════════════
 
-static_dir = os.path.join(os.path.dirname(__file__), "static")
-if os.path.isdir(static_dir):
-    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+index_file = os.path.join(os.path.dirname(__file__), "index.html")
 
+if os.path.exists(index_file):
     @app.get("/", include_in_schema=False)
     def root():
-        return FileResponse(os.path.join(static_dir, "index.html"))
+        return FileResponse(index_file)
 
     @app.get("/{path:path}", include_in_schema=False)
     def spa(path: str):
         if path.startswith("api"):
             raise HTTPException(404)
-        index = os.path.join(static_dir, "index.html")
-        return FileResponse(index) if os.path.exists(index) else HTTPException(404)
+        return FileResponse(index_file)
