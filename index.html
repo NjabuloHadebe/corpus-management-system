@@ -163,7 +163,7 @@ tr:hover td{background:var(--s2);}
 </head>
 <body>
 <div class="app">
-
+ 
 <nav id="sb">
   <div class="slogo">
     <div class="slogo-title">IsiZulu Corpus</div>
@@ -185,9 +185,9 @@ tr:hover td{background:var(--s2);}
     <div class="srow"><span>IOC hours</span><span id="sb-hour-val">—</span></div>
   </div>
 </nav>
-
+ 
 <div id="main">
-
+ 
 <!-- DASHBOARD -->
 <div id="page-dash" class="page active">
   <div class="topbar"><div><h1>Dashboard</h1><div class="topbar-sub" id="today-lbl"></div></div><div class="tba"><button class="btn" id="btn-refresh">↻ Refresh</button></div></div>
@@ -204,7 +204,7 @@ tr:hover td{background:var(--s2);}
     </div>
   </div>
 </div>
-
+ 
 <!-- INC -->
 <div id="page-inc" class="page">
   <div class="topbar"><div><h1>IsiZulu National Corpus</h1><div class="topbar-sub">Clean, correct and store isiZulu text</div></div>
@@ -216,7 +216,7 @@ tr:hover td{background:var(--s2);}
       <div class="tab" data-tab="add">Add Document</div>
       <div class="tab" data-tab="browse">Browse Documents</div>
     </div>
-
+ 
     <div id="inc-clean">
       <div class="wc-widget">
         <div><div style="font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Words in file</div><div class="wc-big" id="wc-num">0</div></div>
@@ -242,7 +242,7 @@ tr:hover td{background:var(--s2);}
         </div>
       </div>
     </div>
-
+ 
     <div id="inc-add" style="display:none">
       <div class="panel" style="max-width:620px">
         <div class="panel-title">Add New Document to INC</div>
@@ -259,7 +259,7 @@ tr:hover td{background:var(--s2);}
         <button class="btn btn-tl" id="btn-add-inc">+ Add to INC</button>
       </div>
     </div>
-
+ 
     <div id="inc-browse" style="display:none">
       <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center">
         <input type="text" class="si" id="inc-search" placeholder="Search documents…" style="max-width:280px">
@@ -272,7 +272,7 @@ tr:hover td{background:var(--s2);}
     </div>
   </div>
 </div>
-
+ 
 <!-- EIPC -->
 <div id="page-eipc" class="page">
   <div class="topbar"><div><h1>English–IsiZulu Parallel Corpus</h1><div class="topbar-sub">Upload separate EN and ZU documents, auto-align sentences</div></div>
@@ -284,7 +284,7 @@ tr:hover td{background:var(--s2);}
       <div class="tab" data-tab="review">Review Pairs</div>
       <div class="tab" data-tab="estats">Statistics</div>
     </div>
-
+ 
     <div id="eipc-align">
       <!-- Pairs counter -->
       <div style="display:flex;align-items:center;gap:20px;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:14px 20px;margin-bottom:22px">
@@ -292,7 +292,7 @@ tr:hover td{background:var(--s2);}
         <div style="flex:1"><div style="font-size:12px;color:var(--mu);margin-bottom:5px">Verification progress</div><div style="height:6px;background:var(--bd);border-radius:3px;overflow:hidden"><div id="e-bar" style="height:100%;width:0%;background:var(--pu);border-radius:3px;transition:width .3s"></div></div><div style="font-size:12px;margin-top:4px;color:var(--mu)" id="e-sub">—</div></div>
         <div style="text-align:right"><div style="font-size:11px;color:var(--mu);margin-bottom:2px">Pending review</div><div style="font-family:var(--mono);font-size:18px;font-weight:500;color:var(--am)" id="e-pending">—</div></div>
       </div>
-
+ 
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
         <div style="width:22px;height:22px;border-radius:50%;background:var(--pu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">1</div>
         <span style="font-size:14px;font-weight:500">Upload your two documents separately</span>
@@ -301,7 +301,7 @@ tr:hover td{background:var(--s2);}
         <div class="uz" id="en-zone"><input type="file" id="en-file" accept=".txt,.docx,.pdf"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:8px;color:var(--pu)">English document</div><div class="uz-icon">🇬🇧</div><div class="uz-text">Click to upload English file</div><div class="uz-hint">TXT, DOCX, PDF</div><div class="uz-name" id="en-name"></div><div class="uz-cnt" id="en-cnt"></div></div>
         <div class="uz" id="zu-zone"><input type="file" id="zu-file" accept=".txt,.docx,.pdf"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:8px;color:var(--tl)">IsiZulu document</div><div class="uz-icon">🇿🇦</div><div class="uz-text">Click to upload IsiZulu file</div><div class="uz-hint">TXT, DOCX, PDF</div><div class="uz-name" id="zu-name"></div><div class="uz-cnt" id="zu-cnt"></div></div>
       </div>
-
+ 
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
         <div style="width:22px;height:22px;border-radius:50%;background:var(--pu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">2</div>
         <span style="font-size:14px;font-weight:500">Run automatic sentence alignment</span>
@@ -316,7 +316,7 @@ tr:hover td{background:var(--s2);}
           <div style="height:4px;background:var(--bd);border-radius:2px;overflow:hidden"><div id="align-pbar" style="height:100%;width:0%;background:var(--pu);border-radius:2px;transition:width .15s"></div></div>
         </div>
       </div>
-
+ 
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
         <div style="width:22px;height:22px;border-radius:50%;background:var(--pu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">3</div>
         <span style="font-size:14px;font-weight:500">Review, correct and approve each pair</span>
@@ -324,7 +324,7 @@ tr:hover td{background:var(--s2);}
       </div>
       <div class="tw"><table class="at"><thead><tr><th style="width:28px">#</th><th>English</th><th>IsiZulu</th><th style="width:68px">Conf.</th><th style="width:78px">Status</th><th style="width:90px">Action</th></tr></thead><tbody id="align-tbody"></tbody></table></div>
     </div>
-
+ 
     <div id="eipc-review" style="display:none">
       <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center">
         <input type="text" class="si" id="pair-search" placeholder="Search English or IsiZulu…" style="max-width:320px">
@@ -341,7 +341,7 @@ tr:hover td{background:var(--s2);}
         <button class="btn btn-sm" id="btn-next-pairs">Next →</button>
       </div>
     </div>
-
+ 
     <div id="eipc-estats" style="display:none">
       <div class="g3" style="margin-bottom:22px">
         <div class="sc"><div class="sl">Total pairs</div><div class="sv2" id="es-total" style="color:var(--pu)">—</div></div>
@@ -355,7 +355,7 @@ tr:hover td{background:var(--s2);}
     </div>
   </div>
 </div>
-
+ 
 <!-- IOC -->
 <div id="page-ioc" class="page">
   <div class="topbar"><div><h1>IsiZulu Oral Corpus</h1><div class="topbar-sub">Upload audio, transcribe and correct</div></div>
@@ -367,7 +367,7 @@ tr:hover td{background:var(--s2);}
       <div class="tab" data-tab="files">Audio Files</div>
       <div class="tab" data-tab="upload">Upload Audio</div>
     </div>
-
+ 
     <div id="ioc-editor">
       <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center">
         <span style="font-size:13px;color:var(--mu)">Editing:</span>
@@ -378,11 +378,11 @@ tr:hover td{background:var(--s2);}
         <div style="text-align:center;padding:30px;color:var(--mu)">Select an audio file above to start transcribing</div>
       </div>
     </div>
-
+ 
     <div id="ioc-files" style="display:none">
       <div class="tw"><table><thead><tr><th>File</th><th>Region</th><th>Speaker</th><th style="text-align:right">Duration</th><th>Status</th></tr></thead><tbody id="ioc-tbody"><tr><td colspan="5"><div class="loading"><span class="spin"></span>Loading…</div></td></tr></tbody></table></div>
     </div>
-
+ 
     <div id="ioc-upload" style="display:none">
       <div class="panel" style="max-width:560px">
         <div class="panel-title">Upload New Audio File</div>
@@ -401,7 +401,7 @@ tr:hover td{background:var(--s2);}
     </div>
   </div>
 </div>
-
+ 
 <!-- SEARCH -->
 <div id="page-search" class="page">
   <div class="topbar"><div><h1>Search & Analysis</h1><div class="topbar-sub">Search across INC, EIPC and IOC</div></div></div>
@@ -411,7 +411,7 @@ tr:hover td{background:var(--s2);}
       <div class="tab" data-tab="freq">Word Frequency</div>
       <div class="tab" data-tab="sstats">Statistics</div>
     </div>
-
+ 
     <div id="search-kwic">
       <div class="sbar"><input type="text" class="si" id="kwic-input" placeholder="Search — e.g. ukuphila, ubuntu, abantu…"><button class="btn btn-tl" id="btn-kwic">Search</button></div>
       <div class="frow">
@@ -423,7 +423,7 @@ tr:hover td{background:var(--s2);}
       <div style="font-size:13px;color:var(--mu);margin-bottom:14px" id="kwic-count"></div>
       <div id="kwic-results"></div>
     </div>
-
+ 
     <div id="search-freq" style="display:none">
       <div style="display:flex;gap:10px;margin-bottom:16px">
         <select id="freq-corpus" style="background:var(--sf);border:1px solid var(--b2);border-radius:var(--r);padding:8px 12px;font-family:var(--font);font-size:13px;outline:none;color:var(--tx)">
@@ -436,7 +436,7 @@ tr:hover td{background:var(--s2);}
       </div>
       <div class="tw"><table><thead><tr><th style="width:40px">Rank</th><th>Word</th><th style="text-align:right">Frequency</th><th style="text-align:right;width:80px">Per 1M</th><th style="width:200px">Distribution</th></tr></thead><tbody id="freq-tbody"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mu)">Select a corpus and click Load Frequency</td></tr></tbody></table></div>
     </div>
-
+ 
     <div id="search-sstats" style="display:none">
       <div class="g4" style="margin-bottom:24px">
         <div class="sc"><div class="sl">Total tokens</div><div class="sv2" id="ss-tokens" style="color:var(--tl)">—</div></div>
@@ -451,10 +451,10 @@ tr:hover td{background:var(--s2);}
     </div>
   </div>
 </div>
-
+ 
 </div></div>
 <div class="toast" id="toast"></div>
-
+ 
 <script>
 var API = "https://corpus-management-system.onrender.com";
 var curDocId = null;
@@ -465,7 +465,7 @@ var pairStatus = "all";
 var pairSearchQ = "";
 var playing = false, tlPct = 0, tlIv;
 var TARGET = 4000;
-
+ 
 // ── API helpers ─────────────────────────────────────
 function get(path) {
   return fetch(API + path).then(function(r) {
@@ -496,7 +496,7 @@ function patch(path, data) {
     body: JSON.stringify(data)
   }).then(function(r) { return r.json(); });
 }
-
+ 
 // ── Toast ────────────────────────────────────────────
 function toast(msg, err) {
   var t = document.getElementById('toast');
@@ -506,7 +506,7 @@ function toast(msg, err) {
   clearTimeout(t._t);
   t._t = setTimeout(function(){t.style.display='none';}, 3500);
 }
-
+ 
 // ── Navigation ───────────────────────────────────────
 function showPage(id) {
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
@@ -536,14 +536,14 @@ function switchTab(mod, tab) {
   if (mod==='inc' && tab==='browse') loadIncDocs();
   if (mod==='search' && tab==='sstats') loadCorpusStats();
 }
-
+ 
 // ── Pill helper ──────────────────────────────────────
 function pill(s) {
   var map={completed:'p-done',in_progress:'p-prog',needs_review:'p-rev',uploaded:'p-pend',verified:'p-ver',pending:'p-pend',flagged:'p-flag'};
   var lbl={completed:'Complete',in_progress:'In progress',needs_review:'Needs review',uploaded:'Uploaded',verified:'Verified',pending:'Pending',flagged:'Flagged'};
   return '<span class="pill '+(map[s]||'p-pend')+'">'+(lbl[s]||s)+'</span>';
 }
-
+ 
 // ── Bar chart helper ─────────────────────────────────
 function barChart(id, data, color) {
   var max = Math.max.apply(null,data.map(function(d){return d.v;})) || 1;
@@ -552,7 +552,7 @@ function barChart(id, data, color) {
       +'<div style="height:5px;background:var(--s2);border-radius:3px"><div style="height:100%;width:'+Math.round(d.v/max*100)+'%;background:'+color+';border-radius:3px"></div></div></div>';
   }).join('');
 }
-
+ 
 // ══════════════════════════════════════════════════════
 // DASHBOARD
 // ══════════════════════════════════════════════════════
@@ -567,7 +567,7 @@ function loadDashboard() {
     document.getElementById('sb-tok-val').textContent = d.total_tokens > 999999 ? (d.total_tokens/1000000).toFixed(1)+'M' : d.total_tokens.toLocaleString();
     document.getElementById('sb-pair-val').textContent = d.verified_pairs.toLocaleString();
     document.getElementById('sb-hour-val').textContent = d.ioc_hours+'h';
-
+ 
     // Activity
     if (d.recent_activity && d.recent_activity.length) {
       document.getElementById('d-activity').innerHTML = d.recent_activity.map(function(a){
@@ -580,7 +580,7 @@ function loadDashboard() {
     } else {
       document.getElementById('d-activity').innerHTML = '<div style="font-size:13px;color:var(--mu);padding:12px 0">No activity yet. Start by adding a document to INC.</div>';
     }
-
+ 
     // Progress bars (from INC stats)
     get('/api/inc/stats').then(function(s) {
       var total = s.total_docs || 1;
@@ -593,7 +593,7 @@ function loadDashboard() {
     document.getElementById('d-activity').innerHTML = '<div style="color:var(--co);font-size:13px">Could not load dashboard — '+e.message+'</div>';
   });
 }
-
+ 
 // ══════════════════════════════════════════════════════
 // INC
 // ══════════════════════════════════════════════════════
@@ -604,7 +604,7 @@ function loadDocSelect() {
       + docs.map(function(d){ return '<option value="'+d.id+'">'+d.title+' ('+d.status+')</option>'; }).join('');
   });
 }
-
+ 
 function loadIncDocs() {
   var search = document.getElementById('inc-search').value;
   var status = document.getElementById('inc-filter').value;
@@ -618,7 +618,7 @@ function loadIncDocs() {
     }).join('') : '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--mu)">No documents yet — add one using the Add Document tab</td></tr>';
   }).catch(function(){ document.getElementById('inc-tbody').innerHTML = '<tr><td colspan="6" style="color:var(--co);padding:20px">Error loading documents</td></tr>'; });
 }
-
+ 
 function updateWC() {
   var text = document.getElementById('inc-editor').value;
   var words = text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -636,7 +636,7 @@ function updateWC() {
   else if (words>=TARGET*.7){note.textContent=Math.max(0,TARGET-words).toLocaleString()+' words to reach target';note.style.color='var(--am)';}
   else{note.textContent='Paste or type corrected text below';note.style.color='var(--mu)';}
 }
-
+ 
 function saveINC() {
   var text = document.getElementById('inc-editor').value.trim();
   if (!text) { toast('Nothing to save — paste corrected text first', true); return; }
@@ -649,7 +649,7 @@ function saveINC() {
       loadDocSelect();
     }).catch(function(e){ toast('Save failed: '+e.message, true); });
 }
-
+ 
 function addINCDoc() {
   var title = document.getElementById('inc-title').value.trim();
   if (!title) { toast('Please enter a document title', true); return; }
@@ -661,7 +661,7 @@ function addINCDoc() {
   fd.append('uploaded_by', 'user');
   var file = document.getElementById('inc-file').files[0];
   if (file) fd.append('file', file);
-
+ 
   postForm('/api/inc/documents', fd)
     .then(function(d) {
       toast('Document added: '+d.title);
@@ -673,7 +673,7 @@ function addINCDoc() {
       loadDocSelect();
     }).catch(function(e){ toast('Error: '+e.message, true); });
 }
-
+ 
 // ══════════════════════════════════════════════════════
 // EIPC
 // ══════════════════════════════════════════════════════
@@ -698,7 +698,7 @@ function loadEIPCStats() {
     document.getElementById('e-avg-len').innerHTML = avgHtml || '<div style="color:var(--mu);font-size:13px">No aligned pairs yet</div>';
   }).catch(function(){});
 }
-
+ 
 function loadPairs() {
   var skip = pairPage * 50;
   var q = '/api/eipc/pairs?skip='+skip+'&limit=50';
@@ -757,9 +757,9 @@ function loadPairs() {
     });
   }).catch(function(e){ document.getElementById('review-tbody').innerHTML='<tr><td colspan="5" style="color:var(--co);padding:20px">Error: '+e.message+'</td></tr>'; });
 }
-
+ 
 function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
+ 
 // EIPC upload + align
 var enDocId = null;
 function uploadEN() {
@@ -779,7 +779,7 @@ function uploadEN() {
     toast('English file uploaded — '+r.sentences+' sentences detected');
   }).catch(function(e){ toast('Upload failed: '+e.message, true); });
 }
-
+ 
 function uploadZU() {
   if (!enDocId) { toast('Upload the English file first', true); return; }
   var file = document.getElementById('zu-file').files[0];
@@ -796,13 +796,13 @@ function uploadZU() {
     toast('IsiZulu file uploaded — '+r.sentences+' sentences detected');
   }).catch(function(e){ toast('Upload failed: '+e.message, true); });
 }
-
+ 
 function checkBoth() {
   var en = document.getElementById('en-status').textContent.startsWith('✓');
   var zu = document.getElementById('zu-status').textContent.startsWith('✓');
   document.getElementById('align-btn').disabled = !(en && zu);
 }
-
+ 
 function runAlign() {
   if (!enDocId) { toast('Upload both files first', true); return; }
   document.getElementById('align-prog').style.display = 'block';
@@ -830,7 +830,7 @@ function runAlign() {
     toast('Alignment failed: '+e.message, true);
   });
 }
-
+ 
 function loadAlignedPairs(docId) {
   get('/api/eipc/pairs?doc_id='+docId+'&limit=50').then(function(data) {
     if (!data.pairs.length) { document.getElementById('align-tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--mu)">No pairs yet</td></tr>'; return; }
@@ -871,7 +871,7 @@ function loadAlignedPairs(docId) {
     });
   });
 }
-
+ 
 // ══════════════════════════════════════════════════════
 // IOC
 // ══════════════════════════════════════════════════════
@@ -888,7 +888,7 @@ function loadIOCFiles() {
     }).join('') : '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mu)">No audio files yet — upload one</td></tr>';
   }).catch(function(){ document.getElementById('ioc-tbody').innerHTML='<tr><td colspan="5" style="color:var(--co);padding:20px">Error loading files</td></tr>'; });
 }
-
+ 
 function loadIOCTranscript(fileId) {
   curIocFileId = fileId;
   get('/api/ioc/files').then(function(files){
@@ -908,7 +908,7 @@ function loadIOCTranscript(fileId) {
     }).catch(function(){});
   });
 }
-
+ 
 function approveSegment() {
   if (!curIocFileId) { toast('Select an audio file first', true); return; }
   var corrText = document.getElementById('corr-tx');
@@ -921,7 +921,7 @@ function approveSegment() {
       loadIOCFiles();
     }).catch(function(e){ toast('Save failed: '+e.message, true); });
 }
-
+ 
 function uploadAudio() {
   var file = document.getElementById('audio-file').files[0];
   if (!file) { toast('Please choose an audio file first', true); return; }
@@ -941,7 +941,7 @@ function uploadAudio() {
     loadIOCFiles();
   }).catch(function(e){ toast('Upload failed: '+e.message, true); });
 }
-
+ 
 // ══════════════════════════════════════════════════════
 // SEARCH
 // ══════════════════════════════════════════════════════
@@ -960,7 +960,7 @@ function runKWIC() {
       }).join('');
     }).catch(function(e){ document.getElementById('kwic-results').innerHTML='<div style="color:var(--co);font-size:13px">Error: '+e.message+'</div>'; });
 }
-
+ 
 function loadFrequency() {
   var corpus = document.getElementById('freq-corpus').value;
   document.getElementById('freq-tbody').innerHTML = '<tr><td colspan="5"><div class="loading"><span class="spin"></span>Computing frequency…</div></td></tr>';
@@ -977,7 +977,7 @@ function loadFrequency() {
       }).join('');
     }).catch(function(e){ document.getElementById('freq-tbody').innerHTML='<tr><td colspan="5" style="color:var(--co);padding:20px">Error: '+e.message+'</td></tr>'; });
 }
-
+ 
 function loadCorpusStats() {
   get('/api/search/stats').then(function(s) {
     document.getElementById('ss-tokens').textContent = s.total_tokens>999999?(s.total_tokens/1000000).toFixed(1)+'M':s.total_tokens.toLocaleString();
@@ -991,7 +991,7 @@ function loadCorpusStats() {
     }
   }).catch(function(){});
 }
-
+ 
 // ══════════════════════════════════════════════════════
 // WIRE ALL EVENTS
 // ══════════════════════════════════════════════════════
@@ -1002,17 +1002,17 @@ function wire() {
   document.getElementById('nav-eipc').addEventListener('click',   function(){ showPage('eipc'); loadEIPCStats(); });
   document.getElementById('nav-ioc').addEventListener('click',    function(){ showPage('ioc'); loadIOCFiles(); });
   document.getElementById('nav-search').addEventListener('click', function(){ showPage('search'); });
-
+ 
   // Tab switching
   ['inc','eipc','ioc','search'].forEach(function(mod){
     document.querySelectorAll('#'+mod+'-tabs .tab').forEach(function(t){
       t.addEventListener('click', function(){ switchTab(mod, this.getAttribute('data-tab')); });
     });
   });
-
+ 
   // Dashboard
   document.getElementById('btn-refresh').addEventListener('click', loadDashboard);
-
+ 
   // INC
   document.getElementById('inc-editor').addEventListener('input', updateWC);
   document.getElementById('btn-save-inc').addEventListener('click', saveINC);
@@ -1045,7 +1045,7 @@ function wire() {
   document.getElementById('btn-add-inc').addEventListener('click', addINCDoc);
   document.getElementById('inc-search').addEventListener('input', loadIncDocs);
   document.getElementById('inc-filter').addEventListener('change', loadIncDocs);
-
+ 
   // EIPC
   document.getElementById('en-zone').addEventListener('click', function(){ document.getElementById('en-file').click(); });
   document.getElementById('en-file').addEventListener('change', uploadEN);
@@ -1064,7 +1064,7 @@ function wire() {
   });
   document.getElementById('btn-prev-pairs').addEventListener('click', function(){ if(pairPage>0){pairPage--;loadPairs();} });
   document.getElementById('btn-next-pairs').addEventListener('click', function(){ pairPage++; loadPairs(); });
-
+ 
   // IOC
   document.getElementById('ioc-file-select').addEventListener('change', function(){ if(this.value) loadIOCTranscript(this.value); });
   document.getElementById('btn-approve-seg').addEventListener('click', approveSegment);
@@ -1074,7 +1074,7 @@ function wire() {
     if(this.files[0]){ var n=document.getElementById('audio-fname'); n.textContent=this.files[0].name; n.style.display='block'; document.getElementById('audio-uz').classList.add('loaded'); }
   });
   document.getElementById('btn-upload-audio').addEventListener('click', uploadAudio);
-
+ 
   // Search
   document.getElementById('btn-kwic').addEventListener('click', runKWIC);
   document.getElementById('kwic-input').addEventListener('keydown', function(e){ if(e.key==='Enter') runKWIC(); });
@@ -1086,7 +1086,7 @@ function wire() {
   });
   document.getElementById('btn-freq').addEventListener('click', loadFrequency);
 }
-
+ 
 // ══════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════
@@ -1095,7 +1095,7 @@ function init() {
   wire();
   loadDashboard();
 }
-
+ 
 init();
 </script>
 </body>
