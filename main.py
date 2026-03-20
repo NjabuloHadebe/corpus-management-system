@@ -20,10 +20,19 @@ from psycopg2.extras import RealDictCursor
 DATABASE_URL = os.environ.get("DATABASE_URL", "")
 
 def get_db():
-    url = DATABASE_URL
+    import urllib.parse
+    url = os.environ.get("DATABASE_URL", "")
     if url.startswith("postgres://"):
         url = url.replace("postgres://", "postgresql://", 1)
-    conn = psycopg2.connect(url, cursor_factory=RealDictCursor)
+    result = urllib.parse.urlparse(url)
+    conn = psycopg2.connect(
+        host=result.hostname,
+        port=result.port or 5432,
+        dbname=result.path.lstrip("/"),
+        user=result.username,
+        password=result.password,
+        cursor_factory=RealDictCursor
+    )
     return conn
 
 
