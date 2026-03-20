@@ -83,15 +83,7 @@ class TranscriptSave(BaseModel):
 
 @app.get("/api/health")
 def health():
-    try:
-        conn = get_db()
-        cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) FROM inc_documents")
-        count = cur.fetchone()["count"]
-        conn.close()
-        return {"status": "ok", "db": "connected", "inc_documents": int(count)}
-    except Exception as e:
-        return {"status": "ok", "db_error": str(e)}
+    return {"status": "ok", "service": "IsiZulu CMS"}
 
 
 # ══════════════════════════════════════════════════════════════════════════════
