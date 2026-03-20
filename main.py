@@ -96,33 +96,26 @@ def dashboard():
     try:
         cur = conn.cursor()
 
-        cur.execute("SELECT COALESCE(SUM(token_count),0) FROM inc_documents")
-        tokens = cur.fetchone()["coalesce"]
+        cur.execute("SELECT COALESCE(SUM(token_count),0) as total FROM inc_documents")
+        tokens = cur.fetchone()["total"]
 
-        cur.execute("SELECT COUNT(*) FROM eipc_pairs WHERE status='verified'")
-        pairs = cur.fetchone()["count"]
+        cur.execute("SELECT COUNT(*) as total FROM eipc_pairs WHERE status='verified'")
+        pairs = cur.fetchone()["total"]
 
-        cur.execute("SELECT COALESCE(SUM(duration_seconds),0) FROM ioc_files")
-        seconds = cur.fetchone()["coalesce"]
+        cur.execute("SELECT COALESCE(SUM(duration_seconds),0) as total FROM ioc_files")
+        seconds = cur.fetchone()["total"]
 
-        cur.execute("SELECT COUNT(*) FROM inc_documents WHERE status='needs_review'")
-        pending_inc = cur.fetchone()["count"]
+        cur.execute("SELECT COUNT(*) as total FROM inc_documents WHERE status='needs_review'")
+        pending_inc = cur.fetchone()["total"]
 
-        cur.execute("SELECT COUNT(*) FROM eipc_pairs WHERE status='pending'")
-        pending_eipc = cur.fetchone()["count"]
+        cur.execute("SELECT COUNT(*) as total FROM eipc_pairs WHERE status='pending'")
+        pending_eipc = cur.fetchone()["total"]
 
-        # Recent activity — last 8 saves across all corpora
         cur.execute("""
-            (SELECT 'INC' as corpus, title as label, saved_by as actor,
-                    word_count as value, 'words' as unit, saved_at as ts
-             FROM inc_texts JOIN inc_documents ON inc_documents.id = inc_texts.document_id
-             ORDER BY saved_at DESC LIMIT 4)
-            UNION ALL
-            (SELECT 'IOC' as corpus, f.filename as label, t.saved_by as actor,
-                    0 as value, 'transcript' as unit, t.saved_at as ts
-             FROM ioc_transcripts t JOIN ioc_files f ON f.id = t.audio_file_id
-             ORDER BY t.saved_at DESC LIMIT 4)
-            ORDER BY ts DESC LIMIT 8
+            SELECT 'INC' as corpus, d.title as label, t.saved_by as actor,
+                   t.word_count as value, t.saved_at as ts
+            FROM inc_texts t JOIN inc_documents d ON d.id = t.document_id
+            ORDER BY t.saved_at DESC LIMIT 8
         """)
         activity = [dict(r) for r in cur.fetchall()]
         for a in activity:
@@ -136,6 +129,9 @@ def dashboard():
             "pending_review": int(pending_inc) + int(pending_eipc),
             "recent_activity": activity,
         }
+    except Exception as e:
+        return {"error": str(e), "total_tokens": 0, "verified_pairs": 0,
+                "ioc_hours": 0, "pending_review": 0, "recent_activity": []}
     finally:
         conn.close()
 
@@ -293,7 +289,11 @@ def inc_stats():
                 COUNT(*) FILTER (WHERE status='needs_review') as needs_review
             FROM inc_documents
         """)
-        return dict(cur.fetchone())
+        row = dict(cur.fetchone())
+        return {k: int(v) for k, v in row.items()}
+    except Exception as e:
+        return {"error": str(e), "total_docs": 0, "total_words": 0,
+                "total_tokens": 0, "completed": 0, "in_progress": 0, "needs_review": 0}
     finally:
         conn.close()
 
