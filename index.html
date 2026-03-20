@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IsiZulu Corpus System</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --surface2: #f0efe9;
+  --border: #e2e0d8;
+  --border2: #c8c5ba;
+  --tx: #1a1917;
+  --mu: #6b6860;
+  --tl: #0f7d65;
+  --tl-l: #e6f4f0;
+  --pu: #5b3ea8;
+  --pu-l: #f0ecfc;
+  --co: #c23b22;
+  --co-l: #fdf0ed;
+  --am: #a0620a;
+  --am-l: #fdf6e8;
+  --gn: #1a6b3a;
+  --gn-l: #e8f5ed;
+  --font: 'IBM Plex Sans', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+  --r: 8px;
+  --rl: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.04);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--tx); min-height: 100vh; }
+
+/* ── Layout ── */
+.app { display: flex; min-height: 100vh; }
+#sb {
+  width: 240px; min-width: 240px; background: var(--surface);
+  border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  height: 100vh; position: fixed; left: 0; top: 0; z-index: 100;
+}
+#main { margin-left: 240px; flex: 1; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.slogo { padding: 20px 18px 16px; border-bottom: 1px solid var(--border); }
+.slogo-title { font-size: 16px; font-weight: 600; color: var(--tx); }
+.slogo-sub { font-size: 11px; color: var(--mu); margin-top: 2px; letter-spacing: .04em; }
+.slogo-tag {
+  display: inline-block; margin-top: 8px; font-size: 10px; font-family: var(--mono);
+  background: var(--tl-l); color: var(--tl); border-radius: 4px; padding: 2px 8px;
+  font-weight: 500;
+}
+.snav { padding: 10px 8px; flex: 1; }
+.nav-section-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--mu); padding: 8px 10px 4px; font-weight: 500;
+}
+.ni {
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+  border-radius: var(--r); cursor: pointer; font-size: 13.5px; color: var(--mu);
+  transition: all .12s; margin-bottom: 1px; font-weight: 400;
+}
+.ni:hover { background: var(--surface2); color: var(--tx); }
+.ni.active { background: var(--surface2); color: var(--tx); font-weight: 500; }
+.ni-icon { width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+.ni-count { margin-left: auto; font-size: 11px; font-family: var(--mono); color: var(--mu); background: var(--surface2); padding: 1px 6px; border-radius: 10px; }
+.sstats { padding: 14px 18px; border-top: 1px solid var(--border); }
+.stat-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--mu); margin-bottom: 5px; }
+.stat-row span:last-child { font-family: var(--mono); font-weight: 500; color: var(--tx); }
+
+/* ── Pages ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── Topbar ── */
+.topbar {
+  display: flex; align-items: center; padding: 14px 28px;
+  border-bottom: 1px solid var(--border); background: var(--surface);
+  position: sticky; top: 0; z-index: 50; gap: 12px;
+}
+.topbar h1 { font-size: 18px; font-weight: 600; color: var(--tx); }
+.topbar-sub { font-size: 13px; color: var(--mu); margin-left: 2px; }
+.tba { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 7px 16px; border-radius: var(--r); font-family: var(--font);
+  font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid var(--border2);
+  background: var(--surface); color: var(--tx); transition: all .12s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn:hover { background: var(--surface2); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-tl { background: var(--tl); color: #fff; border-color: var(--tl); }
+.btn-tl:hover { background: #0a6555; }
+.btn-pu { background: var(--pu); color: #fff; border-color: var(--pu); }
+.btn-pu:hover { background: #4a2f9a; }
+.btn-co { background: var(--co); color: #fff; border-color: var(--co); }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 0; margin-bottom: 22px; border-bottom: 1px solid var(--border); }
+.tab {
+  padding: 9px 18px; font-size: 13.5px; cursor: pointer; color: var(--mu);
+  transition: all .12s; font-weight: 400; border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.tab:hover { color: var(--tx); }
+.tab.active { color: var(--tx); font-weight: 500; border-bottom-color: var(--tx); }
+
+/* ── Cards & panels ── */
+.panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--rl); padding: 20px; box-shadow: var(--shadow);
+}
+.panel-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--mu); margin-bottom: 14px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+.content-area { padding: 24px 28px; }
+
+/* ── Stat cards ── */
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl);
+  padding: 18px 20px; box-shadow: var(--shadow);
+}
+.stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--mu); margin-bottom: 8px; font-weight: 500; }
+.stat-value { font-family: var(--mono); font-size: 26px; font-weight: 500; }
+.stat-sub { font-size: 12px; color: var(--mu); margin-top: 4px; }
+
+/* ── Pills / badges ── */
+.pill { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 20px; font-family: var(--mono); font-weight: 500; }
+.pill-done { background: var(--gn-l); color: var(--gn); }
+.pill-progress { background: var(--am-l); color: var(--am); }
+.pill-review { background: var(--co-l); color: var(--co); }
+.pill-pending { background: var(--surface2); color: var(--mu); }
+.pill-verified { background: var(--gn-l); color: var(--gn); }
+.pill-flagged { background: var(--co-l); color: var(--co); }
+
+/* ── Tables ── */
+.table-wrap { border: 1px solid var(--border); border-radius: var(--rl); overflow: hidden; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th { padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--mu); border-bottom: 1px solid var(--border); background: var(--surface2); }
+td { padding: 10px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+
+/* ── INC editor ── */
+.word-counter {
+  display: flex; align-items: center; gap: 18px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: var(--r); padding: 14px 18px; margin-bottom: 16px;
+}
+.wc-big { font-family: var(--mono); font-size: 32px; font-weight: 500; color: var(--tx); min-width: 80px; }
+.wc-info { flex: 1; }
+.wc-label { font-size: 12px; color: var(--mu); margin-bottom: 6px; }
+.wc-bar-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.wc-bar-fill { height: 100%; border-radius: 3px; transition: width .3s, background .3s; background: var(--tl); }
+.wc-note { font-size: 12px; margin-top: 4px; font-weight: 500; }
+.dual { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.pane { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); }
+.pane-head { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface2); border-radius: var(--rl) var(--rl) 0 0; }
+.pane-head-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--mu); }
+.pane-body { padding: 14px; }
+.ocr-preview { font-family: var(--mono); font-size: 12.5px; line-height: 1.8; color: var(--mu); min-height: 220px; white-space: pre-wrap; }
+.editor {
+  width: 100%; min-height: 220px; background: transparent; border: none;
+  font-family: var(--mono); font-size: 13px; line-height: 1.8; resize: vertical;
+  outline: none; color: var(--tx);
+}
+.err-box { background: var(--co-l); border: 1px solid #f0b8b0; border-radius: var(--r); padding: 14px; margin-bottom: 14px; }
+.err-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+.err-row:last-child { margin-bottom: 0; }
+.err-tag { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--co); background: #fde8e5; border-radius: 4px; padding: 2px 6px; }
+
+/* ── Upload zones ── */
+.upload-zone {
+  border: 2px dashed var(--border2); border-radius: var(--rl); padding: 36px 20px;
+  text-align: center; cursor: pointer; transition: all .15s;
+}
+.upload-zone:hover { border-color: var(--tl); background: var(--tl-l); }
+.upload-zone.loaded { border-color: var(--gn); background: var(--gn-l); border-style: solid; }
+.upload-zone input[type=file] { display: none; }
+.uz-icon { font-size: 28px; margin-bottom: 8px; }
+.uz-text { font-size: 14px; color: var(--mu); }
+.uz-hint { font-size: 12px; color: var(--mu); margin-top: 4px; opacity: .7; }
+.uz-loaded-name { font-size: 13px; font-weight: 500; color: var(--gn); margin-top: 6px; display: none; }
+.uz-loaded-count { font-size: 12px; color: var(--gn); font-family: var(--mono); margin-top: 2px; display: none; }
+
+/* ── Alignment table ── */
+.at { width: 100%; border-collapse: collapse; font-size: 13px; }
+.at th { padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--mu); border-bottom: 1px solid var(--border); background: var(--surface2); font-weight: 600; }
+.at td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+.at tr:hover td { background: var(--surface2); }
+.at tr.verified td { border-left: 3px solid var(--gn); }
+.at tr.flagged td { border-left: 3px solid var(--co); }
+.at tr.pending td { border-left: 3px solid var(--border2); }
+.inline-edit {
+  background: transparent; border: 1px solid transparent; border-radius: 4px;
+  font-family: inherit; font-size: 13px; width: 100%; padding: 2px 5px; color: var(--tx);
+}
+.inline-edit:focus { outline: none; border-color: var(--pu); background: var(--pu-l); }
+
+/* ── IOC audio ── */
+.audio-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); padding: 20px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.audio-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.audio-tag { font-size: 12px; padding: 3px 10px; border-radius: 6px; background: var(--surface2); color: var(--mu); border: 1px solid var(--border); }
+.player { background: var(--surface2); border-radius: var(--r); padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 14px; border: 1px solid var(--border); }
+.play-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--co); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; color: #fff; transition: all .12s; }
+.play-btn:hover { background: #a83020; }
+.timeline { flex: 1; height: 4px; background: var(--border); border-radius: 2px; cursor: pointer; }
+.timeline-fill { height: 100%; background: var(--co); border-radius: 2px; width: 0%; }
+.atime { font-family: var(--mono); font-size: 12px; color: var(--mu); white-space: nowrap; }
+.transcript-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tx-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; }
+.tx-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--mu); margin-bottom: 8px; }
+.tx-box.corrected { border-color: var(--tl); }
+.tx-box.corrected .tx-label { color: var(--tl); }
+.tx-box textarea { width: 100%; min-height: 120px; background: transparent; border: none; font-family: var(--font); font-size: 13.5px; line-height: 1.7; resize: none; outline: none; color: var(--tx); }
+
+/* ── Search ── */
+.search-bar { display: flex; gap: 10px; margin-bottom: 16px; }
+.search-input { flex: 1; background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r); padding: 9px 16px; font-family: var(--font); font-size: 14px; outline: none; color: var(--tx); transition: border .12s; }
+.search-input:focus { border-color: var(--tl); }
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.chip { padding: 5px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 1px solid var(--border2); background: var(--surface); color: var(--mu); transition: all .12s; font-weight: 500; }
+.chip:hover, .chip.active { border-color: var(--tl); background: var(--tl-l); color: var(--tl); }
+.kwic-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 11px 16px; margin-bottom: 6px; display: flex; align-items: baseline; gap: 0; font-size: 13px; box-shadow: var(--shadow); }
+.kwic-left { color: var(--mu); text-align: right; flex: 1; font-family: var(--mono); font-size: 12px; }
+.kwic-kw { color: var(--tl); font-weight: 600; font-family: var(--mono); padding: 0 8px; white-space: nowrap; font-size: 13px; border-bottom: 2px solid var(--tl); }
+.kwic-right { color: var(--mu); flex: 1; font-family: var(--mono); font-size: 12px; }
+.kwic-src { margin-left: 16px; font-size: 11px; color: var(--border2); font-family: var(--mono); white-space: nowrap; }
+
+/* ── Add document form ── */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-group label { font-size: 12px; color: var(--mu); display: block; margin-bottom: 5px; font-weight: 500; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r);
+  padding: 8px 12px; font-family: var(--font); font-size: 13px; color: var(--tx); outline: none;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--tl); }
+
+/* ── Progress bar ── */
+.progress-row { margin-bottom: 12px; }
+.progress-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+.progress-label span:last-child { font-family: var(--mono); font-size: 12px; color: var(--mu); }
+.progress-track { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; background: var(--tx); color: var(--surface);
+  border-radius: var(--r); padding: 11px 18px; font-size: 13px; z-index: 9999;
+  display: none; animation: tsin .2s ease; box-shadow: 0 4px 12px rgba(0,0,0,.2);
+  max-width: 320px;
+}
+@keyframes tsin { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav id="sb">
+  <div class="slogo">
+    <div class="slogo-title">IsiZulu Corpus</div>
+    <div class="slogo-sub">Corpus Management System</div>
+    <div class="slogo-tag">UKZN Language Lab</div>
+  </div>
+  <div class="snav">
+    <div class="nav-section-label">Corpora</div>
+    <div class="ni active" id="nav-dash">
+      <div class="ni-icon" style="background:#f0efe9">📊</div>
+      Dashboard
+    </div>
+    <div class="ni" id="nav-inc">
+      <div class="ni-icon" style="background:var(--tl-l);color:var(--tl)">T</div>
+      INC — Text
+      <span class="ni-count" id="sb-tokens">50M</span>
+    </div>
+    <div class="ni" id="nav-eipc">
+      <div class="ni-icon" style="background:var(--pu-l);color:var(--pu)">P</div>
+      EIPC — Parallel
+      <span class="ni-count" id="sb-pairs">100k</span>
+    </div>
+    <div class="ni" id="nav-ioc">
+      <div class="ni-icon" style="background:var(--co-l);color:var(--co)">A</div>
+      IOC — Oral
+      <span class="ni-count" id="sb-hours">130h</span>
+    </div>
+    <div class="nav-section-label" style="margin-top:8px">Tools</div>
+    <div class="ni" id="nav-search">
+      <div class="ni-icon" style="background:#f0efe9">🔍</div>
+      Search & Analysis
+    </div>
+  </div>
+  <div class="sstats">
+    <div class="stat-row"><span>INC tokens</span><span>50.2M</span></div>
+    <div class="stat-row"><span>EIPC pairs</span><span>100,847</span></div>
+    <div class="stat-row"><span>IOC hours</span><span>130.4h</span></div>
+  </div>
+</nav>
+
+<div id="main">
+
+<!-- ═══ DASHBOARD ═══ -->
+<div id="page-dash" class="page active">
+  <div class="topbar">
+    <div>
+      <h1>Dashboard</h1>
+      <div class="topbar-sub" id="today-label"></div>
+    </div>
+  </div>
+  <div class="content-area">
+    <div class="grid4">
+      <div class="stat-card">
+        <div class="stat-label">INC Tokens</div>
+        <div class="stat-value" style="color:var(--tl)">50.2M</div>
+        <div class="stat-sub">+1.2M this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">EIPC Pairs</div>
+        <div class="stat-value" style="color:var(--pu)">100,847</div>
+        <div class="stat-sub">94% verified</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">IOC Audio</div>
+        <div class="stat-value" style="color:var(--co)">130.4h</div>
+        <div class="stat-sub">89h transcribed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending Review</div>
+        <div class="stat-value" style="color:var(--am)">247</div>
+        <div class="stat-sub">across all corpora</div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-title">Corpus Completion</div>
+        <div class="progress-row">
+          <div class="progress-label"><span>INC — text cleaning</span><span>68%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:68%;background:var(--tl)"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>EIPC — alignment verified</span><span>94%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:94%;background:var(--pu)"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>IOC — transcription done</span><span>68%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:68%;background:var(--co)"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>IOC — human correction</span><span>41%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:41%;background:var(--am)"></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Document Status</div>
+        <div id="doc-status-list">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13.5px">
+            <span>Ilanga_1984_p03.pdf</span><span class="pill pill-progress">In progress</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13.5px">
+            <span>Gov_Health_2018 (EN+ZU)</span><span class="pill pill-pending">Pending align</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13.5px">
+            <span>Interview_KZN_045.wav</span><span class="pill pill-progress">Transcribing</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13.5px">
+            <span>IFM_2001_vol3.pdf</span><span class="pill pill-done">Complete</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13.5px">
+            <span>UmAfrika_1972_scan.tiff</span><span class="pill pill-review">Needs review</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ INC ═══ -->
+<div id="page-inc" class="page">
+  <div class="topbar">
+    <div>
+      <h1>IsiZulu National Corpus</h1>
+      <div class="topbar-sub">Clean, correct and store isiZulu text</div>
+    </div>
+    <div class="tba">
+      <button class="btn btn-sm" id="btn-autofix">⚡ Auto-fix OCR</button>
+      <button class="btn btn-tl" id="btn-save-inc">✓ Save to Corpus</button>
+    </div>
+  </div>
+  <div class="content-area">
+    <div class="tabs" id="inc-tabs">
+      <div class="tab active" data-tab="clean">Clean & Correct</div>
+      <div class="tab" data-tab="add">Add Document</div>
+      <div class="tab" data-tab="browse">Browse Documents</div>
+    </div>
+
+    <!-- Clean tab -->
+    <div id="inc-clean">
+      <div class="word-counter">
+        <div>
+          <div style="font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Words in file</div>
+          <div class="wc-big" id="wc-num">0</div>
+        </div>
+        <div class="wc-info">
+          <div class="wc-label">Tokens (est.): <span id="tok-num" style="font-family:var(--mono);font-weight:500">0</span> &nbsp;·&nbsp; Daily target: <strong>4,000 words</strong> &nbsp;·&nbsp; Remaining: <span id="wc-rem" style="font-family:var(--mono)">4,000</span></div>
+          <div class="wc-bar-track"><div class="wc-bar-fill" id="wc-bar"></div></div>
+          <div class="wc-note" id="wc-note" style="color:var(--mu)">Start typing or paste corrected text below</div>
+        </div>
+        <div style="text-align:right;min-width:110px">
+          <div style="font-size:11px;color:var(--mu);margin-bottom:3px">File</div>
+          <div style="font-size:13px;font-weight:500" id="cur-file">Ilanga_1984_p03.pdf</div>
+          <div style="font-size:12px;color:var(--am);font-family:var(--mono)" id="ocr-score">OCR: 84%</div>
+        </div>
+      </div>
+
+      <!-- OCR errors -->
+      <div class="err-box" id="err-box">
+        <div class="panel-title" style="color:var(--co)">OCR Issues Detected</div>
+        <div id="err-list"></div>
+      </div>
+
+      <!-- Dual pane -->
+      <div class="dual">
+        <div class="pane">
+          <div class="pane-head">
+            <span class="pane-head-title">Original scan / OCR output</span>
+            <span style="font-size:11px;color:var(--am)">84% confidence</span>
+          </div>
+          <div class="pane-body">
+            <div class="ocr-preview" id="ocr-view"></div>
+          </div>
+        </div>
+        <div class="pane">
+          <div class="pane-head">
+            <span class="pane-head-title">Corrected text — editable</span>
+            <span style="font-size:11px;color:var(--mu)" id="pane-wc">0 words</span>
+          </div>
+          <div class="pane-body">
+            <textarea class="editor" id="inc-editor" placeholder="Paste or type corrected isiZulu text here…"></textarea>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="btn btn-sm" id="btn-prev-page">← Previous page</button>
+        <button class="btn btn-sm" id="btn-next-page">Next page →</button>
+        <div style="margin-left:auto;font-size:13px;color:var(--mu)">Page <span id="page-num">3</span> of 14</div>
+      </div>
+    </div>
+
+    <!-- Add document tab -->
+    <div id="inc-add" style="display:none">
+      <div class="panel" style="max-width:620px">
+        <div class="panel-title">Add New Document to INC</div>
+        <div class="form-row">
+          <div class="form-group"><label>Document title</label><input type="text" id="inc-title" placeholder="e.g. Ilanga Lase Natal — Vol. 84"></div>
+          <div class="form-group"><label>Domain</label>
+            <select id="inc-domain">
+              <option>News / Journalism</option><option>Literature</option><option>Legal</option>
+              <option>Educational</option><option>Religious</option><option>Conversational</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Publication year</label><input type="number" id="inc-year" placeholder="e.g. 1984"></div>
+          <div class="form-group"><label>Region / Dialect</label>
+            <select id="inc-region">
+              <option>KwaZulu-Natal</option><option>Gauteng</option><option>Mpumalanga</option>
+              <option>Eastern Cape</option><option>National Standard</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <label>Upload file (PDF, TXT, DOCX, image)</label>
+          <div class="upload-zone" id="inc-upload-zone">
+            <input type="file" id="inc-file-input" accept=".pdf,.txt,.docx,.jpg,.png,.tiff">
+            <div class="uz-icon">📄</div>
+            <div class="uz-text">Click to choose file or drag here</div>
+            <div class="uz-hint">PDF, TXT, DOCX, JPG, PNG, TIFF · Max 50MB</div>
+            <div class="uz-loaded-name" id="inc-loaded-name"></div>
+          </div>
+        </div>
+        <button class="btn btn-tl" id="btn-add-inc">+ Add to INC</button>
+      </div>
+    </div>
+
+    <!-- Browse tab -->
+    <div id="inc-browse" style="display:none">
+      <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center">
+        <input type="text" class="search-input" id="inc-search" placeholder="Search documents…" style="max-width:300px">
+        <select style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:8px 12px;font-family:var(--font);font-size:13px;outline:none;color:var(--tx)" id="inc-filter-status">
+          <option value="">All status</option>
+          <option value="completed">Completed</option>
+          <option value="in_progress">In progress</option>
+          <option value="needs_review">Needs review</option>
+          <option value="uploaded">Uploaded</option>
+        </select>
+        <span style="margin-left:auto;font-size:12px;color:var(--mu);font-family:var(--mono)" id="inc-doc-count">4 documents</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Document</th><th>Domain</th><th>Year</th><th style="text-align:right">Words</th><th style="text-align:right">Tokens</th><th>Status</th><th></th></tr></thead>
+          <tbody id="inc-doc-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EIPC ═══ -->
+<div id="page-eipc" class="page">
+  <div class="topbar">
+    <div>
+      <h1>English–IsiZulu Parallel Corpus</h1>
+      <div class="topbar-sub">Upload separate EN and ZU documents, align sentences</div>
+    </div>
+    <div class="tba">
+      <button class="btn btn-sm" id="btn-export-csv">↓ Export CSV</button>
+      <button class="btn btn-sm" id="btn-export-tmx">↓ Export TMX</button>
+    </div>
+  </div>
+  <div class="content-area">
+    <div class="tabs" id="eipc-tabs">
+      <div class="tab active" data-tab="align">Upload & Align</div>
+      <div class="tab" data-tab="review">Review Pairs</div>
+      <div class="tab" data-tab="estats">Statistics</div>
+    </div>
+
+    <!-- Upload & Align -->
+    <div id="eipc-align">
+      <!-- Pairs counter -->
+      <div style="display:flex;align-items:center;gap:20px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px 20px;margin-bottom:22px">
+        <div>
+          <div style="font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Pairs today</div>
+          <div style="font-family:var(--mono);font-size:28px;font-weight:500" id="pairs-today">87</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:12px;color:var(--mu);margin-bottom:5px">Daily target: <strong>100 pairs</strong></div>
+          <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+            <div id="pairs-bar" style="height:100%;width:87%;background:var(--pu);border-radius:3px;transition:width .3s"></div>
+          </div>
+          <div style="font-size:12px;margin-top:4px;color:var(--am)" id="pairs-rem">13 pairs to reach today's target</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;color:var(--mu);margin-bottom:2px">Total in corpus</div>
+          <div style="font-family:var(--mono);font-size:18px;font-weight:500;color:var(--pu)">100,847</div>
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--pu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</div>
+        <span style="font-size:14px;font-weight:500">Upload your two documents separately</span>
+      </div>
+      <div class="grid2" style="margin-bottom:18px">
+        <div class="upload-zone" id="en-zone">
+          <input type="file" id="en-file" accept=".txt,.docx,.pdf">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:8px;color:var(--pu)">English document</div>
+          <div class="uz-icon">🇬🇧</div>
+          <div class="uz-text">Click to upload English file</div>
+          <div class="uz-hint">TXT, DOCX, PDF</div>
+          <div class="uz-loaded-name" id="en-loaded-name"></div>
+          <div class="uz-loaded-count" id="en-loaded-count"></div>
+        </div>
+        <div class="upload-zone" id="zu-zone">
+          <input type="file" id="zu-file" accept=".txt,.docx,.pdf">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:8px;color:var(--tl)">IsiZulu document</div>
+          <div class="uz-icon">🇿🇦</div>
+          <div class="uz-text">Click to upload IsiZulu file</div>
+          <div class="uz-hint">TXT, DOCX, PDF</div>
+          <div class="uz-loaded-name" id="zu-loaded-name"></div>
+          <div class="uz-loaded-count" id="zu-loaded-count"></div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--pu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</div>
+        <span style="font-size:14px;font-weight:500">Run automatic sentence alignment</span>
+      </div>
+      <div class="panel" style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="flex:1">
+            <div style="font-size:13.5px;margin-bottom:6px">The system matches sentences using similarity scoring. Upload both files first, then click Align.</div>
+            <div style="font-size:12px;color:var(--mu)">
+              English: <span id="en-status" style="color:var(--mu)">No file loaded</span>
+              &nbsp;·&nbsp;
+              IsiZulu: <span id="zu-status" style="color:var(--mu)">No file loaded</span>
+            </div>
+          </div>
+          <button class="btn btn-pu" id="align-btn" disabled>⚡ Auto-Align</button>
+        </div>
+        <div id="align-progress" style="display:none;margin-top:12px">
+          <div style="font-size:12px;color:var(--mu);margin-bottom:6px" id="align-msg">Processing…</div>
+          <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+            <div id="align-pbar" style="height:100%;width:0%;background:var(--pu);border-radius:2px;transition:width .15s"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--pu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</div>
+        <span style="font-size:14px;font-weight:500">Review, correct and approve</span>
+        <span style="margin-left:auto;font-size:12px;color:var(--mu)" id="align-summary"></span>
+      </div>
+      <div class="table-wrap">
+        <table class="at">
+          <thead><tr><th style="width:28px">#</th><th>English</th><th>IsiZulu</th><th style="width:68px">Conf.</th><th style="width:78px">Status</th><th style="width:90px">Action</th></tr></thead>
+          <tbody id="align-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Review pairs -->
+    <div id="eipc-review" style="display:none">
+      <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center">
+        <input type="text" class="search-input" id="pair-search" placeholder="Search English or IsiZulu…" style="max-width:320px">
+        <span class="chip active" data-status="all">All</span>
+        <span class="chip" data-status="verified">Verified</span>
+        <span class="chip" data-status="pending">Pending</span>
+        <span class="chip" data-status="flagged">Flagged</span>
+        <span style="margin-left:auto;font-size:12px;color:var(--mu);font-family:var(--mono)">100,847 total</span>
+      </div>
+      <div class="table-wrap">
+        <table class="at">
+          <thead><tr><th>#</th><th>English</th><th>IsiZulu</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="review-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- EIPC stats -->
+    <div id="eipc-estats" style="display:none">
+      <div class="grid3" style="margin-bottom:22px">
+        <div class="stat-card"><div class="stat-label">Total pairs</div><div class="stat-value" style="color:var(--pu)">100,847</div></div>
+        <div class="stat-card"><div class="stat-label">Verified</div><div class="stat-value" style="color:var(--gn)">94,796</div><div class="stat-sub">94%</div></div>
+        <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value" style="color:var(--am)">5,234</div></div>
+      </div>
+      <div class="grid2">
+        <div class="panel"><div class="panel-title">Pairs by Domain</div><div id="eipc-domain-bars"></div></div>
+        <div class="panel">
+          <div class="panel-title">Avg Sentence Length</div>
+          <div style="margin-top:8px">
+            <div style="font-size:13px;margin-bottom:6px">English avg: <span style="font-family:var(--mono);font-weight:500;color:var(--pu)">12.4 words</span></div>
+            <div style="height:5px;background:var(--surface2);border-radius:3px;margin-bottom:14px"><div style="height:100%;width:52%;background:var(--pu);border-radius:3px"></div></div>
+            <div style="font-size:13px;margin-bottom:6px">IsiZulu avg: <span style="font-family:var(--mono);font-weight:500;color:var(--tl)">9.1 words</span></div>
+            <div style="height:5px;background:var(--surface2);border-radius:3px"><div style="height:100%;width:38%;background:var(--tl);border-radius:3px"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ IOC ═══ -->
+<div id="page-ioc" class="page">
+  <div class="topbar">
+    <div>
+      <h1>IsiZulu Oral Corpus</h1>
+      <div class="topbar-sub">Upload audio, transcribe and correct</div>
+    </div>
+    <div class="tba">
+      <button class="btn btn-sm" id="btn-elan">↓ ELAN Export</button>
+      <button class="btn btn-co" id="btn-transcribe">🎙 Auto-Transcribe</button>
+    </div>
+  </div>
+  <div class="content-area">
+    <div class="tabs" id="ioc-tabs">
+      <div class="tab active" data-tab="editor">Transcription Editor</div>
+      <div class="tab" data-tab="files">Audio Files</div>
+      <div class="tab" data-tab="upload-audio">Upload Audio</div>
+    </div>
+
+    <!-- Editor -->
+    <div id="ioc-editor">
+      <div class="audio-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div style="font-weight:600;font-size:15px">Interview_KZN_045.wav</div>
+          <span class="pill pill-progress">Correction in progress</span>
+        </div>
+        <div class="audio-tags">
+          <span class="audio-tag">📍 Eshowe, KZN</span>
+          <span class="audio-tag">👤 Female / 38y</span>
+          <span class="audio-tag">🎤 Life experience</span>
+          <span class="audio-tag">⏱ 24:31</span>
+        </div>
+        <div class="player">
+          <button class="play-btn" id="play-btn">▶</button>
+          <span class="atime" id="cur-time">08:14</span>
+          <div class="timeline" id="audio-tl"><div class="timeline-fill" id="tl-fill"></div></div>
+          <span class="atime">24:31</span>
+          <select style="background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;font-family:var(--mono);font-size:12px;outline:none;margin-left:6px;color:var(--tx)">
+            <option>0.75x</option><option selected>1.0x</option><option>1.25x</option><option>1.5x</option>
+          </select>
+        </div>
+        <div class="transcript-pair">
+          <div class="tx-box">
+            <div class="tx-label">Auto-transcription (AI draft)</div>
+            <textarea readonly style="opacity:.7">Ngiyabonga kakhulu ngethuba lokukhuluma nawe namuhla. Ngifuna ukukhuluma ngempilo yami yobuchwepheshe empheleni kweminyaka engama-30 ngisebenza ezimayini. Ngaqala ukusebenza e-Durbin ngaphambi kokuthi ngiyothola umsebenzi...</textarea>
+          </div>
+          <div class="tx-box corrected">
+            <div class="tx-label">Human-corrected transcript</div>
+            <textarea id="corrected-tx" placeholder="Correct the auto-transcription here…">Ngiyabonga kakhulu ngethuba lokukhuluma nawe namuhla. Ngifuna ukukhuluma ngempilo yami yobuchwepheshe empheleni kweminyaka engama-30 ngisebenza ezimayini. Ngaqala ukusebenza eDurban ngaphambi kokuthi ngiyothola umsebenzi...</textarea>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-sm" id="btn-prev-seg">← Prev segment</button>
+          <button class="btn btn-sm" id="btn-next-seg">Next segment →</button>
+          <button class="btn btn-tl btn-sm" id="btn-approve-seg" style="margin-left:auto">✓ Approve segment</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Files list -->
+    <div id="ioc-files" style="display:none">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>File</th><th>Region</th><th>Speaker</th><th style="text-align:right">Duration</th><th>Status</th></tr></thead>
+          <tbody id="ioc-file-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Upload audio -->
+    <div id="ioc-upload-audio" style="display:none">
+      <div class="panel" style="max-width:560px">
+        <div class="panel-title">Upload New Audio File</div>
+        <div class="form-group" style="margin-bottom:14px">
+          <label>Audio file (WAV, MP3, M4A)</label>
+          <div class="upload-zone" id="audio-upload-zone">
+            <input type="file" id="audio-file-input" accept=".wav,.mp3,.m4a,.ogg">
+            <div class="uz-icon">🎙</div>
+            <div class="uz-text">Click to choose audio file</div>
+            <div class="uz-hint">WAV, MP3, M4A · Max 500MB</div>
+            <div class="uz-loaded-name" id="audio-loaded-name"></div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Region</label>
+            <select id="audio-region">
+              <option>Eshowe</option><option>Pietermaritzburg</option><option>Durban</option>
+              <option>Richards Bay</option><option>Nkandla</option><option>Ulundi</option><option>Johannesburg</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Speaker gender</label>
+            <select id="audio-gender"><option>Female</option><option>Male</option><option>Other</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Age range</label>
+            <select id="audio-age"><option>18–30</option><option>31–45</option><option>46–60</option><option>61+</option></select>
+          </div>
+          <div class="form-group"><label>Topic / genre</label>
+            <input type="text" id="audio-topic" placeholder="e.g. Life experience">
+          </div>
+        </div>
+        <button class="btn btn-co" id="btn-upload-audio">Upload Audio</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SEARCH ═══ -->
+<div id="page-search" class="page">
+  <div class="topbar">
+    <div><h1>Search & Analysis</h1><div class="topbar-sub">Search across INC, EIPC and IOC</div></div>
+    <div class="tba"><button class="btn btn-sm" id="btn-export-analysis">↓ Export Results</button></div>
+  </div>
+  <div class="content-area">
+    <div class="tabs" id="search-tabs">
+      <div class="tab active" data-tab="kwic">KWIC Search</div>
+      <div class="tab" data-tab="freq">Word Frequency</div>
+      <div class="tab" data-tab="sstats">Corpus Statistics</div>
+    </div>
+
+    <!-- KWIC -->
+    <div id="search-kwic">
+      <div class="search-bar">
+        <input type="text" class="search-input" id="kwic-input" placeholder="Search across all corpora — e.g. ubuntu, ukuphila, abantu…" value="ukuphila">
+        <button class="btn btn-tl" id="btn-kwic">Search</button>
+      </div>
+      <div class="filter-row">
+        <span class="chip active" data-corpus="all">All corpora</span>
+        <span class="chip" data-corpus="inc">INC only</span>
+        <span class="chip" data-corpus="eipc">EIPC only</span>
+        <span class="chip" data-corpus="ioc">IOC only</span>
+      </div>
+      <div style="font-size:13px;color:var(--mu);margin-bottom:14px" id="kwic-count"></div>
+      <div id="kwic-results"></div>
+    </div>
+
+    <!-- Frequency -->
+    <div id="search-freq" style="display:none">
+      <div style="display:flex;gap:10px;margin-bottom:18px">
+        <input type="text" class="search-input" id="freq-search" placeholder="Filter words…" style="max-width:240px">
+        <span class="chip active">INC</span>
+        <span class="chip">EIPC (ZU)</span>
+        <span class="chip">EIPC (EN)</span>
+        <span class="chip">IOC</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th style="width:40px">Rank</th><th>Word</th><th style="text-align:right">Frequency</th><th style="text-align:right;width:80px">Per 1M</th><th style="width:200px">Distribution</th></tr></thead>
+          <tbody id="freq-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div id="search-sstats" style="display:none">
+      <div class="grid4" style="margin-bottom:24px">
+        <div class="stat-card"><div class="stat-label">Total tokens</div><div class="stat-value" style="color:var(--tl)">50.2M</div></div>
+        <div class="stat-card"><div class="stat-label">Unique word types</div><div class="stat-value" style="color:var(--pu)">284K</div></div>
+        <div class="stat-card"><div class="stat-label">Type-token ratio</div><div class="stat-value" style="color:var(--co)">0.0057</div></div>
+        <div class="stat-card"><div class="stat-label">Avg doc length</div><div class="stat-value" style="color:var(--am)">8,240</div><div class="stat-sub">words per document</div></div>
+      </div>
+      <div class="grid2">
+        <div class="panel"><div class="panel-title">Tokens by Domain</div><div id="domain-bars"></div></div>
+        <div class="panel"><div class="panel-title">Monthly Token Growth</div><div id="growth-chart" style="margin-top:8px"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end #main -->
+</div><!-- end .app -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+var incDocs = [
+  { id:1, title:'Ilanga Lase Natal — Vol. 84', domain:'News', year:1984, region:'KwaZulu-Natal', words:42100, tokens:54730, status:'in_progress' },
+  { id:2, title:'IFM Newsletter Vol. 3',       domain:'News', year:2001, region:'KwaZulu-Natal', words:12100, tokens:15730, status:'completed' },
+  { id:3, title:'Izincwadi zeZulu Vol. 1',      domain:'Literature', year:1978, region:'KwaZulu-Natal', words:89400, tokens:116220, status:'completed' },
+  { id:4, title:'UmAfrika — 1972 archive',      domain:'News', year:1972, region:'KwaZulu-Natal', words:8050,  tokens:10465, status:'needs_review' },
+];
+
+var pairData = [
+  { id:1, en:'The government has announced new development policies.', zu:'UHulumeni umemezele izinqubomgomo ezintsha.', st:'verified' },
+  { id:2, en:'Children need quality education in their mother tongue.', zu:'Izingane ziyadinga ukufinyelela imfundo yekhwalithi.', st:'verified' },
+  { id:3, en:'Water shortages remain a challenge in rural areas.', zu:'Ukuntuleka kwamanzi kuseyinkinga ezindaweni.', st:'pending' },
+  { id:4, en:'Traditional healers play an important role.', zu:'Izinyanga zinemisebenzi ebalulekile emiphakathini.', st:'verified' },
+  { id:5, en:'Language preservation requires community involvement.', zu:'Ukugcinwa kolimi kudinga ukubandakanyeka komphakathi.', st:'flagged' },
+  { id:6, en:'The harvest season brings families together.', zu:'Isikhathi sokuvuna sibuthela izimindeni ndawonye.', st:'pending' },
+];
+
+var iocFiles = [
+  { id:1, filename:'Interview_KZN_045.wav', region:'Eshowe', speaker:'F / 38y', duration:'24:31', status:'in_progress' },
+  { id:2, filename:'Oral_PMB_012.wav', region:'Pietermaritzburg', speaker:'M / 55y', duration:'41:08', status:'completed' },
+  { id:3, filename:'Story_JHB_007.wav', region:'Johannesburg', speaker:'F / 62y', duration:'18:55', status:'completed' },
+  { id:4, filename:'Interview_RDB_091.wav', region:'Richards Bay', speaker:'M / 44y', duration:'33:17', status:'needs_review' },
+];
+
+var kwicData = [
+  { l:'Impilo yethu inexhosa ngendlela', k:'ukuphila', r:'okuhle nomuntu wonke.', s:'INC · Ilanga 1984' },
+  { l:'Sicabanga ngokuthi', k:'ukuphila', r:'kwethu kuzolunga ngelinye ilanga.', s:'INC · IFM 2001' },
+  { l:'Uyazi ukuthi', k:'ukuphila', r:'ngisho ukuba nomuntu othembekile?', s:'IOC · KZN_045' },
+  { l:'Izifiso zokuqala', k:'ukuphila', r:'kwakhe kwaqala eDurban.', s:'IOC · PMB_012' },
+  { l:'EIPC: The act of living —', k:'ukuphila', r:'liyatholakala kuwo wonke.', s:'EIPC · Gov 2018' },
+  { l:'Indlela yokubhekana ne-', k:'ukuphila', r:'okunzima isedla ubuchopho.', s:'INC · Lit 1978' },
+  { l:'Ngiyathemba ukuthi', k:'ukuphila', r:'kwami kuzothuthukiswa.', s:'IOC · JHB_007' },
+];
+
+var freqData = [
+  {r:1,w:'ukuthi',f:284120,p:5660}, {r:2,w:'abantu',f:198430,p:3952},
+  {r:3,w:'ngoba',f:174210,p:3469},  {r:4,w:'futhi',f:162880,p:3243},
+  {r:5,w:'uma',f:144320,p:2874},    {r:6,w:'ukuphila',f:98450,p:1960},
+  {r:7,w:'izindaba',f:87200,p:1736},{r:8,w:'ekhaya',f:76340,p:1521},
+  {r:9,w:'imfundo',f:65100,p:1296}, {r:10,w:'umuntu',f:61240,p:1219},
+];
+
+var ocrPages = [
+  { text:'UMnyango wez0buNtu ukhiphe\nisitatimende esithi abantu bazovunyelwa\nukufinyelela izinsiza ezisha\nezikhethiwe zikahulurneni.\nLezi zinsiza zihlanganisa\nizingane kanye namadoda\nnabesifazane baseKZN.', score:84,
+    errs:[{line:'Line 1', orig:'wez0buNtu', fix:'wezoBuntu'},{line:'Line 4', orig:'zikahulurneni', fix:'zikahulumeni'}] },
+  { text:'Uhulumeni we-ANC uqinisekise\nukukhuliswa komnotho wezwc\nngokusebenzisa izindlela\nezintsha zokulawula imali.\nLokhu kufaka phakathi\nukukhulisa amathuba emisebenzi\nkubantu abasha.', score:91,
+    errs:[{line:'Line 2', orig:'wezwc', fix:'wezwe'}] },
+];
+
+var EN_SENTENCES = [
+  'The department announced new health policies for rural communities.',
+  'Children under five will receive free vaccinations at all clinics.',
+  'Water and sanitation services will be extended to informal settlements.',
+  'Communities are encouraged to participate in local governance meetings.',
+  'Traditional leaders play a key role in policy implementation.',
+  'New schools will be built in underserved areas by 2026.',
+  'Women\'s health centres will be established in all districts.',
+];
+var ZU_SENTENCES = [
+  'UMnyango umemezele izinqubomgomo ezintsha zezempilo zemiphakathi yasemakhaya.',
+  'Izingane ezineminyaka engu-5 nangezansi zizothola imigomo mahhala kuzo zonke izigceme.',
+  'Izinsiza zamanzi nezoceko zizandiswa ezikhundleni zokuhlala okungahlelekile.',
+  'Imiphakathi iyakhuthazwa ukuba ibambe iqhaza emihlanganweni kahulumeni wendawo.',
+  'Izikhulu zomdabu zinawo umsebenzi omkhulu ekuqalisweni kwezinqubomgomo.',
+  'Izikole ezintsha zizakhiwa ezindaweni ezingenamali ngo-2026.',
+  'Amasentela ezempilo yabesifazane azosungulwa kuzo zonke izifunda.',
+];
+var CONF = [96,91,88,94,85,97,89];
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+var curOCR = 0;
+var myWords = 0;
+var myPairs = 87;
+var enLoaded = false, zuLoaded = false;
+var playing = false, tlPct = 33;
+var TARGET_WORDS = 4000, TARGET_PAIRS = 100;
+
+// ══════════════════════════════════════
+// UTILITY
+// ══════════════════════════════════════
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = '✓ ' + msg;
+  t.style.display = 'block';
+  clearTimeout(t._t);
+  t._t = setTimeout(function() { t.style.display = 'none'; }, 3000);
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.ni').forEach(function(n) { n.classList.remove('active'); });
+  document.getElementById('page-' + id).classList.add('active');
+  var nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+}
+
+function switchTab(module, tab) {
+  var maps = {
+    inc: ['clean','add','browse'],
+    eipc: ['align','review','estats'],
+    ioc: ['editor','files','upload-audio'],
+    search: ['kwic','freq','sstats']
+  };
+  var list = maps[module];
+  document.querySelectorAll('#' + module + '-tabs .tab').forEach(function(t, i) {
+    t.classList.toggle('active', list[i] === tab);
+  });
+  list.forEach(function(s) {
+    var el = document.getElementById(module + '-' + s);
+    if (el) el.style.display = (s === tab) ? 'block' : 'none';
+  });
+}
+
+function barChart(id, data, color) {
+  var max = Math.max.apply(null, data.map(function(d) { return d.v; })) || 1;
+  document.getElementById(id).innerHTML = data.map(function(d) {
+    return '<div style="margin-bottom:10px">'
+      + '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>' + d.l + '</span><span style="font-family:var(--mono);color:var(--mu)">' + (d.v > 999 ? d.v.toLocaleString() : d.v) + '</span></div>'
+      + '<div style="height:5px;background:var(--surface2);border-radius:3px"><div style="height:100%;width:' + Math.round(d.v/max*100) + '%;background:' + color + ';border-radius:3px"></div></div>'
+      + '</div>';
+  }).join('');
+}
+
+function pillFor(status) {
+  var map = { completed:'pill-done', in_progress:'pill-progress', needs_review:'pill-review', uploaded:'pill-pending', verified:'pill-verified', pending:'pill-pending', flagged:'pill-flagged' };
+  var label = { completed:'Complete', in_progress:'In progress', needs_review:'Needs review', uploaded:'Uploaded', verified:'Verified', pending:'Pending', flagged:'Flagged' };
+  return '<span class="pill ' + (map[status]||'pill-pending') + '">' + (label[status]||status) + '</span>';
+}
+
+// ══════════════════════════════════════
+// INC
+// ══════════════════════════════════════
+function loadOCR() {
+  var pg = ocrPages[curOCR % ocrPages.length];
+  document.getElementById('ocr-view').textContent = pg.text;
+  document.getElementById('ocr-score').textContent = 'OCR: ' + pg.score + '%';
+  document.getElementById('cur-file').textContent = 'Ilanga_1984_p0' + (curOCR + 3) + '.pdf';
+  document.getElementById('page-num').textContent = curOCR + 3;
+  var errList = document.getElementById('err-list');
+  errList.innerHTML = pg.errs.map(function(e) {
+    return '<div class="err-row">'
+      + '<span class="err-tag">' + e.line + '</span>'
+      + '<span>OCR error: <strong>' + e.orig + '</strong> → suggest <strong style="color:var(--tl)">' + e.fix + '</strong></span>'
+      + '<button class="btn btn-sm" style="margin-left:auto" data-orig="' + e.orig + '" data-fix="' + e.fix + '">Apply</button>'
+      + '</div>';
+  }).join('');
+  errList.querySelectorAll('button').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      applyFix(this.getAttribute('data-orig'), this.getAttribute('data-fix'));
+    });
+  });
+}
+
+function updateWC() {
+  var text = document.getElementById('inc-editor').value;
+  var words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  var tokens = Math.round(words * 1.3);
+  myWords = words;
+  document.getElementById('wc-num').textContent = words.toLocaleString();
+  document.getElementById('tok-num').textContent = tokens.toLocaleString();
+  document.getElementById('pane-wc').textContent = words.toLocaleString() + ' words';
+  var pct = Math.min(words / TARGET_WORDS * 100, 100);
+  var bar = document.getElementById('wc-bar');
+  bar.style.width = pct + '%';
+  bar.style.background = words >= TARGET_WORDS ? 'var(--gn)' : words >= TARGET_WORDS * .7 ? 'var(--am)' : 'var(--tl)';
+  var rem = Math.max(0, TARGET_WORDS - words);
+  document.getElementById('wc-rem').textContent = rem.toLocaleString();
+  var note = document.getElementById('wc-note');
+  if (words >= TARGET_WORDS) { note.textContent = '✓ Daily target reached!'; note.style.color = 'var(--gn)'; }
+  else if (words >= TARGET_WORDS * .7) { note.textContent = rem.toLocaleString() + ' words to reach target'; note.style.color = 'var(--am)'; }
+  else { note.textContent = 'Start typing or paste corrected text below'; note.style.color = 'var(--mu)'; }
+}
+
+function applyFix(orig, fix) {
+  var ed = document.getElementById('inc-editor');
+  ed.value = ed.value.replace(new RegExp(orig.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), fix);
+  updateWC();
+  toast('Fixed: ' + orig + ' → ' + fix);
+}
+
+function doAutoFix() {
+  var pg = ocrPages[curOCR % ocrPages.length];
+  var ed = document.getElementById('inc-editor');
+  var t = ed.value || pg.text;
+  pg.errs.forEach(function(e) {
+    t = t.replace(new RegExp(e.orig.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), e.fix);
+  });
+  ed.value = t;
+  updateWC();
+  toast('Auto-fix applied — review before saving');
+}
+
+function saveINC() {
+  var text = document.getElementById('inc-editor').value.trim();
+  if (!text) { toast('Nothing to save — paste corrected text first'); return; }
+  var words = text.split(/\s+/).length;
+  incDocs[0].words = incDocs[0].words + words;
+  incDocs[0].tokens = Math.round(incDocs[0].words * 1.3);
+  incDocs[0].status = 'in_progress';
+  document.getElementById('inc-editor').value = '';
+  updateWC();
+  renderIncDocs();
+  toast('Saved ' + words.toLocaleString() + ' words to INC corpus');
+}
+
+function renderIncDocs(filter) {
+  var docs = filter ? incDocs.filter(function(d) { return d.status === filter; }) : incDocs;
+  var search = document.getElementById('inc-search') ? document.getElementById('inc-search').value.toLowerCase() : '';
+  if (search) docs = docs.filter(function(d) { return d.title.toLowerCase().includes(search); });
+  document.getElementById('inc-doc-count').textContent = docs.length + ' document' + (docs.length !== 1 ? 's' : '');
+  document.getElementById('inc-doc-tbody').innerHTML = docs.map(function(d) {
+    return '<tr><td><span style="font-weight:500">' + d.title + '</span></td>'
+      + '<td style="color:var(--mu)">' + d.domain + '</td>'
+      + '<td style="font-family:var(--mono)">' + d.year + '</td>'
+      + '<td style="text-align:right;font-family:var(--mono)">' + d.words.toLocaleString() + '</td>'
+      + '<td style="text-align:right;font-family:var(--mono)">' + d.tokens.toLocaleString() + '</td>'
+      + '<td>' + pillFor(d.status) + '</td>'
+      + '<td><button class="btn btn-sm" data-id="' + d.id + '">Edit</button></td></tr>';
+  }).join('');
+  document.getElementById('inc-doc-tbody').querySelectorAll('button').forEach(function(btn) {
+    btn.addEventListener('click', function() { toast('Opening document ' + this.getAttribute('data-id') + ' in editor'); });
+  });
+}
+
+// ══════════════════════════════════════
+// EIPC
+// ══════════════════════════════════════
+function loadFile(zoneId, nameId, countId, statusId, label) {
+  var zone = document.getElementById(zoneId);
+  var input = zone.querySelector('input[type=file]');
+  input.click();
+  input.onchange = function() {
+    if (!input.files[0]) return;
+    var fname = input.files[0].name;
+    zone.classList.add('loaded');
+    zone.querySelector('.uz-text').style.display = 'none';
+    var nameEl = document.getElementById(nameId);
+    nameEl.textContent = fname;
+    nameEl.style.display = 'block';
+    var cntEl = document.getElementById(countId);
+    var count = Math.floor(Math.random() * 60) + 100;
+    cntEl.textContent = count + ' sentences detected';
+    cntEl.style.display = 'block';
+    document.getElementById(statusId).textContent = '✓ ' + fname + ' (' + count + ' sentences)';
+    document.getElementById(statusId).style.color = 'var(--gn)';
+    if (zoneId === 'en-zone') enLoaded = true; else zuLoaded = true;
+    if (enLoaded && zuLoaded) {
+      var btn = document.getElementById('align-btn');
+      btn.disabled = false;
+    }
+    toast(label + ' loaded — ' + count + ' sentences detected');
+  };
+}
+
+function runAlign() {
+  document.getElementById('align-progress').style.display = 'block';
+  document.getElementById('align-btn').disabled = true;
+  var p = 0;
+  var msgs = ['Splitting sentences…','Computing similarity scores…','Matching pairs…','Ranking by confidence…','Done!'];
+  var iv = setInterval(function() {
+    p += 8;
+    document.getElementById('align-pbar').style.width = p + '%';
+    document.getElementById('align-msg').textContent = msgs[Math.min(Math.floor(p / 22), 4)];
+    if (p >= 100) {
+      clearInterval(iv);
+      setTimeout(function() {
+        document.getElementById('align-progress').style.display = 'none';
+        renderAligned();
+        document.getElementById('align-summary').textContent = EN_SENTENCES.length + ' pairs generated';
+        toast('Alignment complete — ' + EN_SENTENCES.length + ' pairs ready for review');
+      }, 300);
+    }
+  }, 80);
+}
+
+function renderAligned() {
+  var html = '';
+  EN_SENTENCES.forEach(function(en, i) {
+    var c = CONF[i];
+    var col = c >= 90 ? 'var(--gn)' : c >= 80 ? 'var(--am)' : 'var(--co)';
+    html += '<tr class="pending" id="ar-' + i + '">'
+      + '<td style="font-family:var(--mono);color:var(--mu)">' + (i+1) + '</td>'
+      + '<td><input class="inline-edit" value="' + en + '"></td>'
+      + '<td><input class="inline-edit" value="' + ZU_SENTENCES[i] + '"></td>'
+      + '<td style="font-family:var(--mono);color:' + col + '">' + c + '%</td>'
+      + '<td><span class="pill pill-pending" id="ars-' + i + '">Pending</span></td>'
+      + '<td style="display:flex;gap:4px;padding-top:6px">'
+      + '<button class="btn btn-sm appr" data-i="' + i + '">✓</button>'
+      + '<button class="btn btn-sm flg" data-i="' + i + '">⚑</button>'
+      + '</td></tr>';
+  });
+  var tbody = document.getElementById('align-tbody');
+  tbody.innerHTML = html;
+  tbody.querySelectorAll('.appr').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var i = parseInt(this.getAttribute('data-i'));
+      document.getElementById('ar-' + i).className = 'verified';
+      var sp = document.getElementById('ars-' + i);
+      sp.className = 'pill pill-verified'; sp.textContent = 'Verified';
+      myPairs++;
+      updatePairsWidget();
+      toast('Pair ' + (i+1) + ' approved');
+    });
+  });
+  tbody.querySelectorAll('.flg').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var i = parseInt(this.getAttribute('data-i'));
+      document.getElementById('ar-' + i).className = 'flagged';
+      var sp = document.getElementById('ars-' + i);
+      sp.className = 'pill pill-flagged'; sp.textContent = 'Flagged';
+      toast('Pair ' + (i+1) + ' flagged for review');
+    });
+  });
+}
+
+function updatePairsWidget() {
+  var pct = Math.min(myPairs / TARGET_PAIRS * 100, 100);
+  document.getElementById('pairs-today').textContent = myPairs;
+  document.getElementById('pairs-bar').style.width = pct + '%';
+  var rem = Math.max(0, TARGET_PAIRS - myPairs);
+  var remEl = document.getElementById('pairs-rem');
+  if (myPairs >= TARGET_PAIRS) { remEl.textContent = '✓ Daily target reached!'; remEl.style.color = 'var(--gn)'; }
+  else { remEl.textContent = rem + ' pairs to reach today\'s target'; remEl.style.color = 'var(--am)'; }
+}
+
+function renderPairsReview(data) {
+  data = data || pairData;
+  document.getElementById('review-tbody').innerHTML = data.map(function(p) {
+    return '<tr class="' + p.st + '">'
+      + '<td style="font-family:var(--mono);color:var(--mu)">' + p.id + '</td>'
+      + '<td><input class="inline-edit" value="' + p.en + '"></td>'
+      + '<td><input class="inline-edit" value="' + p.zu + '"></td>'
+      + '<td>' + pillFor(p.st) + '</td>'
+      + '<td style="display:flex;gap:4px;padding-top:6px">'
+      + '<button class="btn btn-sm">✓</button>'
+      + '<button class="btn btn-sm">⚑</button>'
+      + '</td></tr>';
+  }).join('');
+}
+
+// ══════════════════════════════════════
+// IOC
+// ══════════════════════════════════════
+function renderIOCFiles() {
+  document.getElementById('ioc-file-tbody').innerHTML = iocFiles.map(function(f) {
+    return '<tr><td style="font-family:var(--mono);font-size:12px">' + f.filename + '</td>'
+      + '<td style="color:var(--mu)">' + f.region + '</td>'
+      + '<td style="color:var(--mu)">' + f.speaker + '</td>'
+      + '<td style="text-align:right;font-family:var(--mono)">' + f.duration + '</td>'
+      + '<td>' + pillFor(f.status) + '</td></tr>';
+  }).join('');
+}
+
+var playing = false, tlPct = 33, tlInterval;
+function togglePlay() {
+  playing = !playing;
+  document.getElementById('play-btn').textContent = playing ? '⏸' : '▶';
+  if (playing) {
+    tlInterval = setInterval(function() {
+      if (!playing || tlPct >= 100) { clearInterval(tlInterval); return; }
+      tlPct += 0.2;
+      document.getElementById('tl-fill').style.width = tlPct + '%';
+      var total = 1471, cur = Math.round(total * tlPct / 100);
+      var m = Math.floor(cur/60), s = cur % 60;
+      document.getElementById('cur-time').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    }, 100);
+  } else {
+    clearInterval(tlInterval);
+  }
+}
+
+// ══════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════
+function runKWIC() {
+  var term = document.getElementById('kwic-input').value.trim() || 'ukuphila';
+  document.getElementById('kwic-count').innerHTML = kwicData.length + ' results for <strong>&ldquo;' + term + '&rdquo;</strong>';
+  document.getElementById('kwic-results').innerHTML = kwicData.map(function(r) {
+    return '<div class="kwic-row">'
+      + '<span class="kwic-left">' + r.l + '</span>'
+      + '<span class="kwic-kw">' + term + '</span>'
+      + '<span class="kwic-right">' + r.r + '</span>'
+      + '<span class="kwic-src">' + r.s + '</span>'
+      + '</div>';
+  }).join('');
+}
+
+function renderFreq(data) {
+  data = data || freqData;
+  var max = data[0] ? data[0].f : 1;
+  document.getElementById('freq-tbody').innerHTML = data.map(function(r) {
+    return '<tr>'
+      + '<td style="font-family:var(--mono);color:var(--mu)">' + r.r + '</td>'
+      + '<td style="font-family:var(--mono);font-weight:500;color:var(--tl)">' + r.w + '</td>'
+      + '<td style="text-align:right;font-family:var(--mono)">' + r.f.toLocaleString() + '</td>'
+      + '<td style="text-align:right;font-family:var(--mono);color:var(--mu)">' + r.p.toLocaleString() + '</td>'
+      + '<td><span style="height:5px;background:var(--pu);border-radius:3px;display:inline-block;width:' + Math.round(r.f/max*180) + 'px"></span></td>'
+      + '</tr>';
+  }).join('');
+}
+
+// ══════════════════════════════════════
+// WIRE EVENTS
+// ══════════════════════════════════════
+function wire() {
+  // Sidebar
+  document.getElementById('nav-dash').addEventListener('click', function() { showPage('dash'); });
+  document.getElementById('nav-inc').addEventListener('click', function() { showPage('inc'); });
+  document.getElementById('nav-eipc').addEventListener('click', function() { showPage('eipc'); });
+  document.getElementById('nav-ioc').addEventListener('click', function() { showPage('ioc'); });
+  document.getElementById('nav-search').addEventListener('click', function() { showPage('search'); });
+
+  // Tab switching
+  ['inc','eipc','ioc','search'].forEach(function(mod) {
+    document.querySelectorAll('#' + mod + '-tabs .tab').forEach(function(t) {
+      t.addEventListener('click', function() { switchTab(mod, this.getAttribute('data-tab')); });
+    });
+  });
+
+  // INC
+  document.getElementById('inc-editor').addEventListener('input', updateWC);
+  document.getElementById('btn-autofix').addEventListener('click', doAutoFix);
+  document.getElementById('btn-save-inc').addEventListener('click', saveINC);
+  document.getElementById('btn-next-page').addEventListener('click', function() {
+    curOCR++; document.getElementById('inc-editor').value = ''; loadOCR(); updateWC(); toast('Next page loaded');
+  });
+  document.getElementById('btn-prev-page').addEventListener('click', function() {
+    if (curOCR > 0) { curOCR--; document.getElementById('inc-editor').value = ''; loadOCR(); updateWC(); }
+  });
+  document.getElementById('inc-upload-zone').addEventListener('click', function() {
+    document.getElementById('inc-file-input').click();
+  });
+  document.getElementById('inc-file-input').addEventListener('change', function() {
+    if (this.files[0]) {
+      var el = document.getElementById('inc-loaded-name');
+      el.textContent = this.files[0].name; el.style.display = 'block';
+      document.getElementById('inc-upload-zone').classList.add('loaded');
+    }
+  });
+  document.getElementById('btn-add-inc').addEventListener('click', function() {
+    var title = document.getElementById('inc-title').value.trim();
+    if (!title) { toast('Please enter a document title'); return; }
+    incDocs.push({
+      id: incDocs.length + 1,
+      title: title,
+      domain: document.getElementById('inc-domain').value,
+      year: parseInt(document.getElementById('inc-year').value) || null,
+      region: document.getElementById('inc-region').value,
+      words: 0, tokens: 0, status: 'uploaded'
+    });
+    renderIncDocs();
+    toast('Document added: ' + title);
+    document.getElementById('inc-title').value = '';
+    document.getElementById('inc-year').value = '';
+  });
+  document.getElementById('inc-search').addEventListener('input', function() {
+    renderIncDocs(document.getElementById('inc-filter-status').value || undefined);
+  });
+  document.getElementById('inc-filter-status').addEventListener('change', function() {
+    renderIncDocs(this.value || undefined);
+  });
+
+  // EIPC
+  document.getElementById('en-zone').addEventListener('click', function() {
+    loadFile('en-zone', 'en-loaded-name', 'en-loaded-count', 'en-status', 'English document');
+  });
+  document.getElementById('zu-zone').addEventListener('click', function() {
+    loadFile('zu-zone', 'zu-loaded-name', 'zu-loaded-count', 'zu-status', 'IsiZulu document');
+  });
+  document.getElementById('align-btn').addEventListener('click', runAlign);
+  document.getElementById('btn-export-csv').addEventListener('click', function() { toast('CSV export of 100,847 pairs started'); });
+  document.getElementById('btn-export-tmx').addEventListener('click', function() { toast('TMX export started'); });
+  document.getElementById('pair-search').addEventListener('input', function() {
+    var q = this.value.toLowerCase();
+    renderPairsReview(q ? pairData.filter(function(p) { return p.en.toLowerCase().includes(q) || p.zu.toLowerCase().includes(q); }) : null);
+  });
+  document.querySelectorAll('#eipc-review .chip').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      document.querySelectorAll('#eipc-review .chip').forEach(function(c) { c.classList.remove('active'); });
+      this.classList.add('active');
+      var s = this.getAttribute('data-status');
+      renderPairsReview(s === 'all' ? null : pairData.filter(function(p) { return p.st === s; }));
+    });
+  });
+
+  // IOC
+  document.getElementById('play-btn').addEventListener('click', togglePlay);
+  document.getElementById('audio-tl').addEventListener('click', function(e) {
+    var r = this.getBoundingClientRect();
+    tlPct = Math.round((e.clientX - r.left) / r.width * 100);
+    document.getElementById('tl-fill').style.width = tlPct + '%';
+  });
+  document.getElementById('btn-approve-seg').addEventListener('click', function() { toast('Segment approved and saved'); });
+  document.getElementById('btn-prev-seg').addEventListener('click', function() { toast('Previous segment'); });
+  document.getElementById('btn-next-seg').addEventListener('click', function() { toast('Next segment'); });
+  document.getElementById('btn-elan').addEventListener('click', function() { toast('ELAN XML export started'); });
+  document.getElementById('btn-transcribe').addEventListener('click', function() { toast('Auto-transcription started — this may take a few minutes'); });
+  document.getElementById('audio-upload-zone').addEventListener('click', function() {
+    document.getElementById('audio-file-input').click();
+  });
+  document.getElementById('audio-file-input').addEventListener('change', function() {
+    if (this.files[0]) {
+      var el = document.getElementById('audio-loaded-name');
+      el.textContent = this.files[0].name; el.style.display = 'block';
+      document.getElementById('audio-upload-zone').classList.add('loaded');
+    }
+  });
+  document.getElementById('btn-upload-audio').addEventListener('click', function() {
+    var el = document.getElementById('audio-loaded-name');
+    if (!el.textContent) { toast('Please choose an audio file first'); return; }
+    iocFiles.push({
+      id: iocFiles.length + 1,
+      filename: el.textContent,
+      region: document.getElementById('audio-region').value,
+      speaker: document.getElementById('audio-gender').value + ' / ' + document.getElementById('audio-age').value,
+      duration: '--:--',
+      status: 'uploaded'
+    });
+    renderIOCFiles();
+    toast('Audio file uploaded: ' + el.textContent);
+  });
+
+  // Search
+  document.getElementById('btn-kwic').addEventListener('click', runKWIC);
+  document.getElementById('kwic-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') runKWIC(); });
+  document.getElementById('freq-search').addEventListener('input', function() {
+    var q = this.value.toLowerCase();
+    renderFreq(q ? freqData.filter(function(r) { return r.w.includes(q); }) : null);
+  });
+  document.getElementById('btn-export-analysis').addEventListener('click', function() { toast('Analysis results exported'); });
+  document.querySelectorAll('[data-corpus]').forEach(function(c) {
+    c.addEventListener('click', function() {
+      document.querySelectorAll('[data-corpus]').forEach(function(x) { x.classList.remove('active'); });
+      this.classList.add('active');
+      runKWIC();
+    });
+  });
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+function init() {
+  document.getElementById('today-label').textContent = new Date().toLocaleDateString('en-ZA', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  wire();
+  loadOCR();
+  renderIncDocs();
+  renderPairsReview();
+  renderIOCFiles();
+  runKWIC();
+  renderFreq();
+
+  barChart('eipc-domain-bars', [
+    {l:'Government / Legal', v:34200}, {l:'News / Media', v:28100},
+    {l:'Education', v:19800}, {l:'Literature', v:12400}, {l:'Religious', v:6300}
+  ], 'var(--pu)');
+
+  barChart('domain-bars', [
+    {l:'News / Journalism', v:21400000}, {l:'Literature', v:12800000},
+    {l:'Legal', v:8300000}, {l:'Educational', v:5600000}, {l:'Religious', v:2100000}
+  ], 'var(--tl)');
+
+  var months = ['Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  var vals = [1.1,1.4,1.8,2.1,1.6,1.3,1.9];
+  var maxV = Math.max.apply(null, vals);
+  document.getElementById('growth-chart').innerHTML =
+    '<div style="display:flex;align-items:flex-end;gap:8px;height:72px">'
+    + months.map(function(m, i) {
+        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">'
+          + '<div style="width:100%;height:' + Math.round(vals[i]/maxV*60) + 'px;background:var(--tl);border-radius:3px 3px 0 0;opacity:.75"></div>'
+          + '<div style="font-size:10px;color:var(--mu);font-family:var(--mono)">' + m + '</div>'
+          + '</div>';
+      }).join('')
+    + '</div><div style="font-size:11px;color:var(--mu);margin-top:5px;font-family:var(--mono)">millions of tokens added per month</div>';
+}
+
+init();
+</script>
+</body>
+</html>
