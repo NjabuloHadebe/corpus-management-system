@@ -83,7 +83,18 @@ class TranscriptSave(BaseModel):
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "service": "IsiZulu CMS"}
+    import urllib.parse
+    url = os.environ.get("DATABASE_URL", "NOT SET")
+    if url != "NOT SET":
+        parsed = urllib.parse.urlparse(url)
+        return {
+            "status": "ok",
+            "db_host": parsed.hostname,
+            "db_user": parsed.username,
+            "db_name": parsed.path.lstrip("/"),
+            "url_starts_with": url[:20]
+        }
+    return {"status": "ok", "db": "NOT SET"}
 
 
 # ══════════════════════════════════════════════════════════════════════════════
