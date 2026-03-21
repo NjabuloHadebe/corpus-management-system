@@ -79,24 +79,18 @@ th{padding:10px 16px;text-align:left;font-size:11px;font-weight:600;text-transfo
 td{padding:10px 16px;border-bottom:1px solid var(--bd);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:var(--s2);}
+/* ── INC CLEAN WIDGET ── */
 .wc-widget{display:flex;align-items:center;gap:18px;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:14px 18px;margin-bottom:16px;}
 .wc-big{font-family:var(--mono);font-size:32px;font-weight:500;min-width:80px;}
 .wc-info{flex:1;}
-.wc-lbl{font-size:12px;color:var(--mu);margin-bottom:6px;}
-.wc-track{height:6px;background:var(--bd);border-radius:3px;overflow:hidden;}
-.wc-fill{height:100%;border-radius:3px;transition:width .3s,background .3s;background:var(--tl);}
-.wc-note{font-size:12px;margin-top:4px;font-weight:500;}
+.wc-lbl{font-size:12px;color:var(--mu);margin-bottom:4px;}
 .dual{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
 .pane{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);}
 .ph{padding:10px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:var(--s2);border-radius:var(--rl) var(--rl) 0 0;}
 .pht{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);}
 .pb{padding:14px;}
-.ocr-prev{font-family:var(--mono);font-size:12.5px;line-height:1.8;color:var(--mu);min-height:220px;white-space:pre-wrap;}
-.editor{width:100%;min-height:220px;background:transparent;border:none;font-family:var(--mono);font-size:13px;line-height:1.8;resize:vertical;outline:none;color:var(--tx);}
-.err-box{background:var(--co-l);border:1px solid #f0b8b0;border-radius:var(--r);padding:14px;margin-bottom:14px;}
-.err-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px;}
-.err-row:last-child{margin-bottom:0;}
-.err-tag{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--co);background:#fde8e5;border-radius:4px;padding:2px 6px;}
+.ocr-prev{font-family:var(--mono);font-size:12.5px;line-height:1.8;color:var(--mu);min-height:300px;max-height:400px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;}
+.editor{width:100%;min-height:300px;background:transparent;border:none;font-family:var(--mono);font-size:13px;line-height:1.8;resize:vertical;outline:none;color:var(--tx);}
 .uz{border:2px dashed var(--b2);border-radius:var(--rl);padding:36px 20px;text-align:center;cursor:pointer;transition:all .15s;}
 .uz:hover{border-color:var(--tl);background:var(--tl-l);}
 .uz.loaded{border-color:var(--gn);background:var(--gn-l);border-style:solid;}
@@ -118,12 +112,6 @@ tr:hover td{background:var(--s2);}
 .acard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:20px;margin-bottom:14px;box-shadow:var(--shadow);}
 .atags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
 .atag{font-size:12px;padding:3px 10px;border-radius:6px;background:var(--s2);color:var(--mu);border:1px solid var(--bd);}
-.player{background:var(--s2);border-radius:var(--r);padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:14px;border:1px solid var(--bd);}
-.pbtn{width:36px;height:36px;border-radius:50%;background:var(--co);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:#fff;}
-.pbtn:hover{background:#a83020;}
-.tline{flex:1;height:4px;background:var(--bd);border-radius:2px;cursor:pointer;}
-.tline-fill{height:100%;background:var(--co);border-radius:2px;width:0%;}
-.atime{font-family:var(--mono);font-size:12px;color:var(--mu);white-space:nowrap;}
 .tpair{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .txbox{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:14px;}
 .txbox.ok{border-color:var(--tl);}
@@ -150,20 +138,21 @@ tr:hover td{background:var(--s2);}
 .prl span:last-child{font-family:var(--mono);font-size:12px;color:var(--mu);}
 .prt{height:5px;background:var(--s2);border-radius:3px;overflow:hidden;}
 .prf{height:100%;border-radius:3px;}
-/* Loading */
 .loading{text-align:center;padding:40px;color:var(--mu);font-size:14px;}
 .spin{display:inline-block;width:18px;height:18px;border:2px solid var(--bd);border-top-color:var(--tl);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:8px;}
 @keyframes sp{to{transform:rotate(360deg);}}
-/* Toast */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--tx);color:var(--sf);border-radius:var(--r);padding:11px 18px;font-size:13px;z-index:9999;display:none;animation:tsi .2s ease;box-shadow:0 4px 12px rgba(0,0,0,.2);max-width:320px;}
 .toast.err{background:var(--co);}
 @keyframes tsi{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px;}
+/* Browse docs clickable row */
+.doc-row{cursor:pointer;}
+.doc-row:hover td{background:var(--tl-l)!important;}
 </style>
 </head>
 <body>
 <div class="app">
- 
+
 <nav id="sb">
   <div class="slogo">
     <div class="slogo-title">IsiZulu Corpus</div>
@@ -185,9 +174,9 @@ tr:hover td{background:var(--s2);}
     <div class="srow"><span>IOC hours</span><span id="sb-hour-val">—</span></div>
   </div>
 </nav>
- 
+
 <div id="main">
- 
+
 <!-- DASHBOARD -->
 <div id="page-dash" class="page active">
   <div class="topbar"><div><h1>Dashboard</h1><div class="topbar-sub" id="today-lbl"></div></div><div class="tba"><button class="btn" id="btn-refresh">↻ Refresh</button></div></div>
@@ -204,11 +193,15 @@ tr:hover td{background:var(--s2);}
     </div>
   </div>
 </div>
- 
+
 <!-- INC -->
 <div id="page-inc" class="page">
-  <div class="topbar"><div><h1>IsiZulu National Corpus</h1><div class="topbar-sub">Clean, correct and store isiZulu text</div></div>
-    <div class="tba"><button class="btn btn-sm" id="btn-autofix">⚡ Auto-fix OCR</button><button class="btn btn-tl" id="btn-save-inc">✓ Save to Corpus</button></div>
+  <div class="topbar">
+    <div><h1>IsiZulu National Corpus</h1><div class="topbar-sub">Clean, correct and store isiZulu text</div></div>
+    <div class="tba">
+      <button class="btn btn-sm" id="btn-autofix">⚡ Auto-fix OCR</button>
+      <button class="btn btn-tl" id="btn-save-inc">✓ Save to Corpus</button>
+    </div>
   </div>
   <div class="ca">
     <div class="tabs" id="inc-tabs">
@@ -216,33 +209,51 @@ tr:hover td{background:var(--s2);}
       <div class="tab" data-tab="add">Add Document</div>
       <div class="tab" data-tab="browse">Browse Documents</div>
     </div>
- 
+
+    <!-- ── CLEAN & CORRECT ── -->
     <div id="inc-clean">
+      <!-- Simplified header — no target/remaining -->
       <div class="wc-widget">
-        <div><div style="font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Words in file</div><div class="wc-big" id="wc-num">0</div></div>
-        <div class="wc-info">
-          <div class="wc-lbl">Tokens (est.): <span id="tok-num" style="font-family:var(--mono);font-weight:500">0</span> &nbsp;·&nbsp; Target: <strong>4,000 words</strong> &nbsp;·&nbsp; Remaining: <span id="wc-rem" style="font-family:var(--mono)">4,000</span></div>
-          <div class="wc-track"><div class="wc-fill" id="wc-bar"></div></div>
-          <div class="wc-note" id="wc-note" style="color:var(--mu)">Paste or type corrected text below</div>
+        <div>
+          <div style="font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Words in file</div>
+          <div class="wc-big" id="wc-num">0</div>
         </div>
-        <div style="text-align:right;min-width:160px">
+        <div class="wc-info">
+          <div class="wc-lbl">Tokens (est.): <span id="tok-num" style="font-family:var(--mono);font-weight:500">0</span></div>
+          <div style="font-size:12px;color:var(--mu)" id="wc-note">Select a document to begin cleaning</div>
+        </div>
+        <div style="text-align:right;min-width:200px">
           <div style="font-size:11px;color:var(--mu);margin-bottom:4px">Working on</div>
-          <select id="doc-select" style="background:var(--sf);border:1px solid var(--b2);border-radius:var(--r);padding:5px 10px;font-family:var(--font);font-size:12px;outline:none;color:var(--tx);width:100%"><option value="">— select document —</option></select>
+          <select id="doc-select" style="background:var(--sf);border:1px solid var(--b2);border-radius:var(--r);padding:5px 10px;font-family:var(--font);font-size:12px;outline:none;color:var(--tx);width:100%">
+            <option value="">— select document —</option>
+          </select>
+          <div style="font-size:11px;color:var(--mu);margin-top:4px" id="ocr-score"></div>
         </div>
       </div>
-      <div class="err-box" id="err-box" style="display:none"><div class="panel-title" style="color:var(--co)">OCR Issues Detected</div><div id="err-list"></div></div>
+
       <div class="dual">
         <div class="pane">
-          <div class="ph"><span class="pht">Original / OCR output</span><span style="font-size:11px;color:var(--am)" id="ocr-score"></span></div>
-          <div class="pb"><div class="ocr-prev" id="ocr-view">Select a document above to load its OCR text.</div></div>
+          <div class="ph">
+            <span class="pht">Original / OCR output</span>
+            <span style="font-size:11px;color:var(--am)" id="ocr-badge"></span>
+          </div>
+          <div class="pb">
+            <div class="ocr-prev" id="ocr-view">Select a document above to load its original text.</div>
+          </div>
         </div>
         <div class="pane">
-          <div class="ph"><span class="pht">Corrected text — editable</span><span style="font-size:11px;color:var(--mu)" id="pane-wc">0 words</span></div>
-          <div class="pb"><textarea class="editor" id="inc-editor" placeholder="Paste or type corrected isiZulu text here…"></textarea></div>
+          <div class="ph">
+            <span class="pht">Corrected text — editable</span>
+            <span style="font-size:11px;color:var(--mu)" id="pane-wc">0 words</span>
+          </div>
+          <div class="pb">
+            <textarea class="editor" id="inc-editor" placeholder="Type or paste corrected isiZulu text here…"></textarea>
+          </div>
         </div>
       </div>
     </div>
- 
+
+    <!-- ── ADD DOCUMENT ── -->
     <div id="inc-add" style="display:none">
       <div class="panel" style="max-width:620px">
         <div class="panel-title">Add New Document to INC</div>
@@ -253,26 +264,45 @@ tr:hover td{background:var(--s2);}
           <div><label>Region / Dialect</label><select id="inc-region"><option>KwaZulu-Natal</option><option>Gauteng</option><option>Mpumalanga</option><option>Eastern Cape</option><option>National Standard</option></select></div>
         </div>
         <div style="margin-bottom:14px">
-          <label style="font-size:12px;color:var(--mu);display:block;margin-bottom:6px;font-weight:500">Upload file (optional)</label>
-          <div class="uz" id="inc-uz"><input type="file" id="inc-file" accept=".pdf,.txt,.docx,.jpg,.png,.tiff"><div class="uz-icon">📄</div><div class="uz-text">Click to choose file</div><div class="uz-hint">PDF, TXT, DOCX, image · Max 50MB</div><div class="uz-name" id="inc-fname"></div></div>
+          <label style="font-size:12px;color:var(--mu);display:block;margin-bottom:6px;font-weight:500">Upload file *</label>
+          <div class="uz" id="inc-uz">
+            <input type="file" id="inc-file" accept=".pdf,.txt,.docx">
+            <div class="uz-icon">📄</div>
+            <div class="uz-text">Click to choose file</div>
+            <div class="uz-hint">TXT, DOCX, PDF · Max 50MB</div>
+            <div class="uz-name" id="inc-fname"></div>
+          </div>
         </div>
         <button class="btn btn-tl" id="btn-add-inc">+ Add to INC</button>
       </div>
     </div>
- 
+
+    <!-- ── BROWSE DOCUMENTS ── -->
     <div id="inc-browse" style="display:none">
+      <div style="background:var(--tl-l);border:1px solid var(--tl);border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--tl)">
+        💡 Click any document row to open it in Clean &amp; Correct
+      </div>
       <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center">
         <input type="text" class="si" id="inc-search" placeholder="Search documents…" style="max-width:280px">
         <select style="background:var(--sf);border:1px solid var(--b2);border-radius:var(--r);padding:8px 12px;font-family:var(--font);font-size:13px;outline:none;color:var(--tx)" id="inc-filter">
-          <option value="">All status</option><option value="completed">Completed</option><option value="in_progress">In progress</option><option value="needs_review">Needs review</option><option value="uploaded">Uploaded</option>
+          <option value="">All status</option>
+          <option value="completed">Completed</option>
+          <option value="in_progress">In progress</option>
+          <option value="needs_review">Needs review</option>
+          <option value="uploaded">Uploaded</option>
         </select>
         <span style="margin-left:auto;font-size:12px;color:var(--mu);font-family:var(--mono)" id="inc-count">—</span>
       </div>
-      <div class="tw"><table><thead><tr><th>Document</th><th>Domain</th><th>Year</th><th style="text-align:right">Words</th><th style="text-align:right">Tokens</th><th>Status</th></tr></thead><tbody id="inc-tbody"><tr><td colspan="6"><div class="loading"><span class="spin"></span>Loading…</div></td></tr></tbody></table></div>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Document</th><th>Domain</th><th>Year</th><th style="text-align:right">Words</th><th style="text-align:right">Tokens</th><th>Status</th></tr></thead>
+          <tbody id="inc-tbody"><tr><td colspan="6"><div class="loading"><span class="spin"></span>Loading…</div></td></tr></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
- 
+
 <!-- EIPC -->
 <div id="page-eipc" class="page">
   <div class="topbar"><div><h1>English–IsiZulu Parallel Corpus</h1><div class="topbar-sub">Upload separate EN and ZU documents, auto-align sentences</div></div>
@@ -284,15 +314,14 @@ tr:hover td{background:var(--s2);}
       <div class="tab" data-tab="review">Review Pairs</div>
       <div class="tab" data-tab="estats">Statistics</div>
     </div>
- 
+
     <div id="eipc-align">
-      <!-- Pairs counter -->
       <div style="display:flex;align-items:center;gap:20px;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:14px 20px;margin-bottom:22px">
         <div><div style="font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Total verified pairs</div><div style="font-family:var(--mono);font-size:28px;font-weight:500;color:var(--pu)" id="e-total">—</div></div>
         <div style="flex:1"><div style="font-size:12px;color:var(--mu);margin-bottom:5px">Verification progress</div><div style="height:6px;background:var(--bd);border-radius:3px;overflow:hidden"><div id="e-bar" style="height:100%;width:0%;background:var(--pu);border-radius:3px;transition:width .3s"></div></div><div style="font-size:12px;margin-top:4px;color:var(--mu)" id="e-sub">—</div></div>
         <div style="text-align:right"><div style="font-size:11px;color:var(--mu);margin-bottom:2px">Pending review</div><div style="font-family:var(--mono);font-size:18px;font-weight:500;color:var(--am)" id="e-pending">—</div></div>
       </div>
- 
+
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
         <div style="width:22px;height:22px;border-radius:50%;background:var(--pu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">1</div>
         <span style="font-size:14px;font-weight:500">Upload your two documents separately</span>
@@ -301,7 +330,7 @@ tr:hover td{background:var(--s2);}
         <div class="uz" id="en-zone"><input type="file" id="en-file" accept=".txt,.docx,.pdf"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:8px;color:var(--pu)">English document</div><div class="uz-icon">🇬🇧</div><div class="uz-text">Click to upload English file</div><div class="uz-hint">TXT, DOCX, PDF</div><div class="uz-name" id="en-name"></div><div class="uz-cnt" id="en-cnt"></div></div>
         <div class="uz" id="zu-zone"><input type="file" id="zu-file" accept=".txt,.docx,.pdf"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:8px;color:var(--tl)">IsiZulu document</div><div class="uz-icon">🇿🇦</div><div class="uz-text">Click to upload IsiZulu file</div><div class="uz-hint">TXT, DOCX, PDF</div><div class="uz-name" id="zu-name"></div><div class="uz-cnt" id="zu-cnt"></div></div>
       </div>
- 
+
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
         <div style="width:22px;height:22px;border-radius:50%;background:var(--pu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">2</div>
         <span style="font-size:14px;font-weight:500">Run automatic sentence alignment</span>
@@ -316,7 +345,7 @@ tr:hover td{background:var(--s2);}
           <div style="height:4px;background:var(--bd);border-radius:2px;overflow:hidden"><div id="align-pbar" style="height:100%;width:0%;background:var(--pu);border-radius:2px;transition:width .15s"></div></div>
         </div>
       </div>
- 
+
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
         <div style="width:22px;height:22px;border-radius:50%;background:var(--pu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">3</div>
         <span style="font-size:14px;font-weight:500">Review, correct and approve each pair</span>
@@ -324,7 +353,7 @@ tr:hover td{background:var(--s2);}
       </div>
       <div class="tw"><table class="at"><thead><tr><th style="width:28px">#</th><th>English</th><th>IsiZulu</th><th style="width:68px">Conf.</th><th style="width:78px">Status</th><th style="width:90px">Action</th></tr></thead><tbody id="align-tbody"></tbody></table></div>
     </div>
- 
+
     <div id="eipc-review" style="display:none">
       <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center">
         <input type="text" class="si" id="pair-search" placeholder="Search English or IsiZulu…" style="max-width:320px">
@@ -341,7 +370,7 @@ tr:hover td{background:var(--s2);}
         <button class="btn btn-sm" id="btn-next-pairs">Next →</button>
       </div>
     </div>
- 
+
     <div id="eipc-estats" style="display:none">
       <div class="g3" style="margin-bottom:22px">
         <div class="sc"><div class="sl">Total pairs</div><div class="sv2" id="es-total" style="color:var(--pu)">—</div></div>
@@ -355,7 +384,7 @@ tr:hover td{background:var(--s2);}
     </div>
   </div>
 </div>
- 
+
 <!-- IOC -->
 <div id="page-ioc" class="page">
   <div class="topbar"><div><h1>IsiZulu Oral Corpus</h1><div class="topbar-sub">Upload audio, transcribe and correct</div></div>
@@ -367,7 +396,6 @@ tr:hover td{background:var(--s2);}
       <div class="tab" data-tab="files">Audio Files</div>
       <div class="tab" data-tab="upload">Upload Audio</div>
     </div>
- 
     <div id="ioc-editor">
       <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center">
         <span style="font-size:13px;color:var(--mu)">Editing:</span>
@@ -378,11 +406,9 @@ tr:hover td{background:var(--s2);}
         <div style="text-align:center;padding:30px;color:var(--mu)">Select an audio file above to start transcribing</div>
       </div>
     </div>
- 
     <div id="ioc-files" style="display:none">
       <div class="tw"><table><thead><tr><th>File</th><th>Region</th><th>Speaker</th><th style="text-align:right">Duration</th><th>Status</th></tr></thead><tbody id="ioc-tbody"><tr><td colspan="5"><div class="loading"><span class="spin"></span>Loading…</div></td></tr></tbody></table></div>
     </div>
- 
     <div id="ioc-upload" style="display:none">
       <div class="panel" style="max-width:560px">
         <div class="panel-title">Upload New Audio File</div>
@@ -401,7 +427,7 @@ tr:hover td{background:var(--s2);}
     </div>
   </div>
 </div>
- 
+
 <!-- SEARCH -->
 <div id="page-search" class="page">
   <div class="topbar"><div><h1>Search & Analysis</h1><div class="topbar-sub">Search across INC, EIPC and IOC</div></div></div>
@@ -411,7 +437,6 @@ tr:hover td{background:var(--s2);}
       <div class="tab" data-tab="freq">Word Frequency</div>
       <div class="tab" data-tab="sstats">Statistics</div>
     </div>
- 
     <div id="search-kwic">
       <div class="sbar"><input type="text" class="si" id="kwic-input" placeholder="Search — e.g. ukuphila, ubuntu, abantu…"><button class="btn btn-tl" id="btn-kwic">Search</button></div>
       <div class="frow">
@@ -423,7 +448,6 @@ tr:hover td{background:var(--s2);}
       <div style="font-size:13px;color:var(--mu);margin-bottom:14px" id="kwic-count"></div>
       <div id="kwic-results"></div>
     </div>
- 
     <div id="search-freq" style="display:none">
       <div style="display:flex;gap:10px;margin-bottom:16px">
         <select id="freq-corpus" style="background:var(--sf);border:1px solid var(--b2);border-radius:var(--r);padding:8px 12px;font-family:var(--font);font-size:13px;outline:none;color:var(--tx)">
@@ -436,7 +460,6 @@ tr:hover td{background:var(--s2);}
       </div>
       <div class="tw"><table><thead><tr><th style="width:40px">Rank</th><th>Word</th><th style="text-align:right">Frequency</th><th style="text-align:right;width:80px">Per 1M</th><th style="width:200px">Distribution</th></tr></thead><tbody id="freq-tbody"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mu)">Select a corpus and click Load Frequency</td></tr></tbody></table></div>
     </div>
- 
     <div id="search-sstats" style="display:none">
       <div class="g4" style="margin-bottom:24px">
         <div class="sc"><div class="sl">Total tokens</div><div class="sv2" id="ss-tokens" style="color:var(--tl)">—</div></div>
@@ -446,15 +469,15 @@ tr:hover td{background:var(--s2);}
       </div>
       <div class="g2">
         <div class="panel"><div class="panel-title">Tokens by Domain</div><div id="ss-domain"></div></div>
-        <div class="panel"><div class="panel-title">About This Data</div><div style="font-size:13.5px;color:var(--mu);line-height:1.7;margin-top:8px">Statistics are computed live from the database. Tokens are estimated at 1.3× word count. Refresh the page to get updated numbers as new text is added to the corpus.</div></div>
+        <div class="panel"><div class="panel-title">About This Data</div><div style="font-size:13.5px;color:var(--mu);line-height:1.7;margin-top:8px">Statistics are computed live from the database. Tokens are estimated at 1.3× word count.</div></div>
       </div>
     </div>
   </div>
 </div>
- 
+
 </div></div>
 <div class="toast" id="toast"></div>
- 
+
 <script>
 var API = "https://corpus-management-system.onrender.com";
 var curDocId = null;
@@ -463,10 +486,8 @@ var enDocId = null;
 var pairPage = 0;
 var pairStatus = "all";
 var pairSearchQ = "";
-var playing = false, tlPct = 0, tlIv;
-var TARGET = 4000;
- 
-// ── API helpers ─────────────────────────────────────
+
+// ── API helpers ───────────────────────────────────────────────────────────────
 function get(path) {
   return fetch(API + path).then(function(r) {
     if (!r.ok) throw new Error(r.status);
@@ -475,9 +496,7 @@ function get(path) {
 }
 function post(path, data) {
   return fetch(API + path, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(data)
+    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)
   }).then(function(r) {
     if (!r.ok) return r.json().then(function(e){throw new Error(e.detail||r.status);});
     return r.json();
@@ -491,13 +510,11 @@ function postForm(path, fd) {
 }
 function patch(path, data) {
   return fetch(API + path, {
-    method:'PATCH',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(data)
+    method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
   }).then(function(r) { return r.json(); });
 }
- 
-// ── Toast ────────────────────────────────────────────
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
 function toast(msg, err) {
   var t = document.getElementById('toast');
   t.textContent = (err ? '✗ ' : '✓ ') + msg;
@@ -506,8 +523,8 @@ function toast(msg, err) {
   clearTimeout(t._t);
   t._t = setTimeout(function(){t.style.display='none';}, 3500);
 }
- 
-// ── Navigation ───────────────────────────────────────
+
+// ── Navigation ────────────────────────────────────────────────────────────────
 function showPage(id) {
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active');});
@@ -515,6 +532,7 @@ function showPage(id) {
   var nav = document.getElementById('nav-'+id);
   if (nav) nav.classList.add('active');
 }
+
 function switchTab(mod, tab) {
   var maps = {
     inc:['clean','add','browse'],
@@ -536,15 +554,13 @@ function switchTab(mod, tab) {
   if (mod==='inc' && tab==='browse') loadIncDocs();
   if (mod==='search' && tab==='sstats') loadCorpusStats();
 }
- 
-// ── Pill helper ──────────────────────────────────────
+
 function pill(s) {
   var map={completed:'p-done',in_progress:'p-prog',needs_review:'p-rev',uploaded:'p-pend',verified:'p-ver',pending:'p-pend',flagged:'p-flag'};
   var lbl={completed:'Complete',in_progress:'In progress',needs_review:'Needs review',uploaded:'Uploaded',verified:'Verified',pending:'Pending',flagged:'Flagged'};
   return '<span class="pill '+(map[s]||'p-pend')+'">'+(lbl[s]||s)+'</span>';
 }
- 
-// ── Bar chart helper ─────────────────────────────────
+
 function barChart(id, data, color) {
   var max = Math.max.apply(null,data.map(function(d){return d.v;})) || 1;
   document.getElementById(id).innerHTML = data.map(function(d){
@@ -552,14 +568,13 @@ function barChart(id, data, color) {
       +'<div style="height:5px;background:var(--s2);border-radius:3px"><div style="height:100%;width:'+Math.round(d.v/max*100)+'%;background:'+color+';border-radius:3px"></div></div></div>';
   }).join('');
 }
- 
+
 // ══════════════════════════════════════════════════════
 // DASHBOARD
 // ══════════════════════════════════════════════════════
 function loadDashboard() {
   document.getElementById('d-activity').innerHTML = '<div class="loading"><span class="spin"></span>Loading…</div>';
   get('/api/dashboard').then(function(d) {
-    // Stats
     document.getElementById('d-tokens').textContent = d.total_tokens > 999999 ? (d.total_tokens/1000000).toFixed(1)+'M' : d.total_tokens.toLocaleString();
     document.getElementById('d-pairs').textContent = d.verified_pairs.toLocaleString();
     document.getElementById('d-hours').textContent = d.ioc_hours+'h';
@@ -567,21 +582,16 @@ function loadDashboard() {
     document.getElementById('sb-tok-val').textContent = d.total_tokens > 999999 ? (d.total_tokens/1000000).toFixed(1)+'M' : d.total_tokens.toLocaleString();
     document.getElementById('sb-pair-val').textContent = d.verified_pairs.toLocaleString();
     document.getElementById('sb-hour-val').textContent = d.ioc_hours+'h';
- 
-    // Activity
     if (d.recent_activity && d.recent_activity.length) {
       document.getElementById('d-activity').innerHTML = d.recent_activity.map(function(a){
         var col = a.corpus==='INC'?'var(--tl)':a.corpus==='IOC'?'var(--co)':'var(--pu)';
-        var desc = a.corpus==='INC' ? (a.actor||'Someone')+' saved '+a.value.toLocaleString()+' words to '+a.label : (a.actor||'Someone')+' transcribed '+a.label;
         return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:13px">'
           +'<div style="width:7px;height:7px;border-radius:50%;background:'+col+';flex-shrink:0"></div>'
-          +'<div>'+desc+'</div></div>';
+          +'<div>'+(a.actor||'Someone')+' saved '+a.value.toLocaleString()+' words to '+a.label+'</div></div>';
       }).join('');
     } else {
       document.getElementById('d-activity').innerHTML = '<div style="font-size:13px;color:var(--mu);padding:12px 0">No activity yet. Start by adding a document to INC.</div>';
     }
- 
-    // Progress bars (from INC stats)
     get('/api/inc/stats').then(function(s) {
       var total = s.total_docs || 1;
       var pct = Math.round((s.completed||0)/total*100);
@@ -593,27 +603,25 @@ function loadDashboard() {
     document.getElementById('d-activity').innerHTML = '<div style="color:var(--co);font-size:13px">Could not load dashboard — '+e.message+'</div>';
   });
 }
- 
+
 // ══════════════════════════════════════════════════════
 // INC
 // ══════════════════════════════════════════════════════
+
+// ✅ FIXED: loadDocSelect only populates the dropdown — does NOT call API
 function loadDocSelect() {
-  get('/api/inc/documents/'+curDocId+'/text').then(function(t){
-  // Always show OCR original on left panel
-  document.getElementById('ocr-view').textContent = t.ocr_text || 'No original text available for this document.';
-  if (t.text) {
-    document.getElementById('inc-editor').value = t.text;
-    document.getElementById('ocr-score').textContent = 'Last saved: '+(t.word_count||0).toLocaleString()+' words';
-    updateWC();
-    toast('Loaded saved text for this document');
-  } else {
-    document.getElementById('ocr-score').textContent = 'No corrections saved yet';
-    document.getElementById('inc-editor').value = '';
-    updateWC();
-  }
-});
+  get('/api/inc/documents').then(function(docs) {
+    var sel = document.getElementById('doc-select');
+    var current = sel.value;
+    sel.innerHTML = '<option value="">— select document —</option>'
+      + docs.map(function(d){
+          return '<option value="'+d.id+'">'+d.title+' ('+d.status+')</option>';
+        }).join('');
+    // Restore selection if still valid
+    if (current) sel.value = current;
+  });
 }
- 
+
 function loadIncDocs() {
   var search = document.getElementById('inc-search').value;
   var status = document.getElementById('inc-filter').value;
@@ -623,42 +631,88 @@ function loadIncDocs() {
   get(q).then(function(docs) {
     document.getElementById('inc-count').textContent = docs.length + ' document'+(docs.length!==1?'s':'');
     document.getElementById('inc-tbody').innerHTML = docs.length ? docs.map(function(d){
-      return '<tr><td style="font-weight:500">'+d.title+'</td><td style="color:var(--mu)">'+(d.domain||'—')+'</td><td style="font-family:var(--mono)">'+(d.year||'—')+'</td><td style="text-align:right;font-family:var(--mono)">'+(d.word_count||0).toLocaleString()+'</td><td style="text-align:right;font-family:var(--mono)">'+(d.token_count||0).toLocaleString()+'</td><td>'+pill(d.status)+'</td></tr>';
+      return '<tr class="doc-row" data-id="'+d.id+'" data-title="'+escHtml(d.title)+'">'
+        +'<td style="font-weight:500">'+d.title+'</td>'
+        +'<td style="color:var(--mu)">'+(d.domain||'—')+'</td>'
+        +'<td style="font-family:var(--mono)">'+(d.year||'—')+'</td>'
+        +'<td style="text-align:right;font-family:var(--mono)">'+(d.word_count||0).toLocaleString()+'</td>'
+        +'<td style="text-align:right;font-family:var(--mono)">'+(d.token_count||0).toLocaleString()+'</td>'
+        +'<td>'+pill(d.status)+'</td>'
+        +'</tr>';
     }).join('') : '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--mu)">No documents yet — add one using the Add Document tab</td></tr>';
-  }).catch(function(){ document.getElementById('inc-tbody').innerHTML = '<tr><td colspan="6" style="color:var(--co);padding:20px">Error loading documents</td></tr>'; });
+
+    // ✅ Wire click — clicking a row opens it in Clean & Correct
+    document.querySelectorAll('.doc-row').forEach(function(row){
+      row.addEventListener('click', function(){
+        var docId = this.getAttribute('data-id');
+        switchTab('inc', 'clean');
+        var sel = document.getElementById('doc-select');
+        sel.value = docId;
+        loadDocText(docId);
+      });
+    });
+  }).catch(function(){
+    document.getElementById('inc-tbody').innerHTML = '<tr><td colspan="6" style="color:var(--co);padding:20px">Error loading documents</td></tr>';
+  });
 }
- 
+
+// ✅ FIXED: updateWC — no target/remaining
 function updateWC() {
   var text = document.getElementById('inc-editor').value;
   var words = text.trim() ? text.trim().split(/\s+/).length : 0;
-  var tokens = Math.round(words*1.3);
+  var tokens = Math.round(words * 1.3);
   document.getElementById('wc-num').textContent = words.toLocaleString();
   document.getElementById('tok-num').textContent = tokens.toLocaleString();
   document.getElementById('pane-wc').textContent = words.toLocaleString()+' words';
-  var pct = Math.min(words/TARGET*100,100);
-  var bar = document.getElementById('wc-bar');
-  bar.style.width = pct+'%';
-  bar.style.background = words>=TARGET?'var(--gn)':words>=TARGET*.7?'var(--am)':'var(--tl)';
-  document.getElementById('wc-rem').textContent = Math.max(0,TARGET-words).toLocaleString();
-  var note = document.getElementById('wc-note');
-  if (words>=TARGET){note.textContent='✓ Daily target reached!';note.style.color='var(--gn)';}
-  else if (words>=TARGET*.7){note.textContent=Math.max(0,TARGET-words).toLocaleString()+' words to reach target';note.style.color='var(--am)';}
-  else{note.textContent='Paste or type corrected text below';note.style.color='var(--mu)';}
 }
- 
+
+// ✅ FIXED: loadDocText — separate function, shows OCR on left, corrected on right
+function loadDocText(docId) {
+  if (!docId) return;
+  curDocId = docId;
+  document.getElementById('ocr-view').textContent = 'Loading…';
+  document.getElementById('ocr-score').textContent = '';
+  document.getElementById('inc-editor').value = '';
+  updateWC();
+
+  get('/api/inc/documents/'+docId+'/text').then(function(t) {
+    // ✅ Left panel: always show OCR original
+    if (t.ocr_text && t.ocr_text.trim()) {
+      document.getElementById('ocr-view').textContent = t.ocr_text;
+      document.getElementById('ocr-badge').textContent = 'Raw OCR text';
+    } else {
+      document.getElementById('ocr-view').textContent = 'No original text found for this document. Upload the file again using Add Document.';
+      document.getElementById('ocr-badge').textContent = '';
+    }
+
+    // ✅ Right panel: load previously saved corrected text if any
+    if (t.text && t.text.trim()) {
+      document.getElementById('inc-editor').value = t.text;
+      document.getElementById('ocr-score').textContent = 'Last saved: '+(t.word_count||0).toLocaleString()+' words';
+      toast('Loaded — '+t.word_count.toLocaleString()+' words previously saved');
+    } else {
+      document.getElementById('inc-editor').value = '';
+      document.getElementById('ocr-score').textContent = 'No corrections saved yet';
+    }
+    updateWC();
+  }).catch(function(e){
+    document.getElementById('ocr-view').textContent = 'Error loading document: '+e.message;
+    toast('Error loading document', true);
+  });
+}
+
 function saveINC() {
   var text = document.getElementById('inc-editor').value.trim();
-  if (!text) { toast('Nothing to save — paste corrected text first', true); return; }
+  if (!text) { toast('Nothing to save — type corrected text first', true); return; }
   if (!curDocId) { toast('Please select a document first', true); return; }
   post('/api/inc/save-text', {document_id: parseInt(curDocId), text: text, saved_by: 'user'})
     .then(function(r) {
-      toast('Saved '+r.word_count.toLocaleString()+' words ('+r.token_count.toLocaleString()+' tokens) to database');
-      document.getElementById('inc-editor').value = '';
-      updateWC();
+      toast('Saved '+r.word_count.toLocaleString()+' words ('+r.token_count.toLocaleString()+' tokens)');
+      document.getElementById('ocr-score').textContent = 'Last saved: '+r.word_count.toLocaleString()+' words';
       loadDocSelect();
     }).catch(function(e){ toast('Save failed: '+e.message, true); });
 }
- 
+
 function addINCDoc() {
   var title = document.getElementById('inc-title').value.trim();
   if (!title) { toast('Please enter a document title', true); return; }
@@ -670,7 +724,7 @@ function addINCDoc() {
   fd.append('uploaded_by', 'user');
   var file = document.getElementById('inc-file').files[0];
   if (file) fd.append('file', file);
- 
+
   postForm('/api/inc/documents', fd)
     .then(function(d) {
       toast('Document added: '+d.title);
@@ -680,9 +734,16 @@ function addINCDoc() {
       document.getElementById('inc-uz').classList.remove('loaded');
       document.getElementById('inc-fname').style.display = 'none';
       loadDocSelect();
+      // ✅ Auto-open the new doc in Clean & Correct
+      switchTab('inc', 'clean');
+      setTimeout(function(){
+        var sel = document.getElementById('doc-select');
+        sel.value = d.id;
+        loadDocText(d.id);
+      }, 500);
     }).catch(function(e){ toast('Error: '+e.message, true); });
 }
- 
+
 // ══════════════════════════════════════════════════════
 // EIPC
 // ══════════════════════════════════════════════════════
@@ -707,7 +768,7 @@ function loadEIPCStats() {
     document.getElementById('e-avg-len').innerHTML = avgHtml || '<div style="color:var(--mu);font-size:13px">No aligned pairs yet</div>';
   }).catch(function(){});
 }
- 
+
 function loadPairs() {
   var skip = pairPage * 50;
   var q = '/api/eipc/pairs?skip='+skip+'&limit=50';
@@ -732,7 +793,6 @@ function loadPairs() {
         +'<button class="btn btn-sm p-flag" data-id="'+p.id+'">⚑</button>'
         +'</td></tr>';
     }).join('');
-    // Wire approve/flag
     document.querySelectorAll('.p-appr').forEach(function(btn){
       btn.addEventListener('click', function(){
         var id = parseInt(this.getAttribute('data-id'));
@@ -754,23 +814,19 @@ function loadPairs() {
         });
       });
     });
-    // Wire inline edit
     document.querySelectorAll('.ie').forEach(function(inp){
       inp.addEventListener('blur', function(){
         var id = parseInt(this.getAttribute('data-id'));
         var field = this.getAttribute('data-field');
-        var val = this.value;
-        var body = {}; body[field] = val;
+        var body = {}; body[field] = this.value;
         patch('/api/eipc/pairs/'+id, body).then(function(){ toast('Pair '+id+' updated'); });
       });
     });
   }).catch(function(e){ document.getElementById('review-tbody').innerHTML='<tr><td colspan="5" style="color:var(--co);padding:20px">Error: '+e.message+'</td></tr>'; });
 }
- 
+
 function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
- 
-// EIPC upload + align
-var enDocId = null;
+
 function uploadEN() {
   var file = document.getElementById('en-file').files[0];
   if (!file) return;
@@ -780,7 +836,6 @@ function uploadEN() {
   postForm('/api/eipc/upload-en', fd).then(function(r) {
     enDocId = r.document_id;
     document.getElementById('en-zone').classList.add('loaded');
-    document.getElementById('en-zone').querySelector('.uz-text').style.display='none';
     document.getElementById('en-name').textContent = file.name; document.getElementById('en-name').style.display='block';
     document.getElementById('en-cnt').textContent = r.sentences+' sentences detected'; document.getElementById('en-cnt').style.display='block';
     document.getElementById('en-status').textContent = '✓ '+file.name+' ('+r.sentences+' sentences)'; document.getElementById('en-status').style.color='var(--gn)';
@@ -788,7 +843,7 @@ function uploadEN() {
     toast('English file uploaded — '+r.sentences+' sentences detected');
   }).catch(function(e){ toast('Upload failed: '+e.message, true); });
 }
- 
+
 function uploadZU() {
   if (!enDocId) { toast('Upload the English file first', true); return; }
   var file = document.getElementById('zu-file').files[0];
@@ -797,7 +852,6 @@ function uploadZU() {
   fd.append('file', file);
   postForm('/api/eipc/upload-zu/'+enDocId, fd).then(function(r) {
     document.getElementById('zu-zone').classList.add('loaded');
-    document.getElementById('zu-zone').querySelector('.uz-text').style.display='none';
     document.getElementById('zu-name').textContent = file.name; document.getElementById('zu-name').style.display='block';
     document.getElementById('zu-cnt').textContent = r.sentences+' sentences detected'; document.getElementById('zu-cnt').style.display='block';
     document.getElementById('zu-status').textContent = '✓ '+file.name+' ('+r.sentences+' sentences)'; document.getElementById('zu-status').style.color='var(--gn)';
@@ -805,13 +859,13 @@ function uploadZU() {
     toast('IsiZulu file uploaded — '+r.sentences+' sentences detected');
   }).catch(function(e){ toast('Upload failed: '+e.message, true); });
 }
- 
+
 function checkBoth() {
   var en = document.getElementById('en-status').textContent.startsWith('✓');
   var zu = document.getElementById('zu-status').textContent.startsWith('✓');
   document.getElementById('align-btn').disabled = !(en && zu);
 }
- 
+
 function runAlign() {
   if (!enDocId) { toast('Upload both files first', true); return; }
   document.getElementById('align-prog').style.display = 'block';
@@ -839,7 +893,7 @@ function runAlign() {
     toast('Alignment failed: '+e.message, true);
   });
 }
- 
+
 function loadAlignedPairs(docId) {
   get('/api/eipc/pairs?doc_id='+docId+'&limit=50').then(function(data) {
     if (!data.pairs.length) { document.getElementById('align-tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--mu)">No pairs yet</td></tr>'; return; }
@@ -863,8 +917,7 @@ function loadAlignedPairs(docId) {
         patch('/api/eipc/pairs/'+id,{status:'verified'}).then(function(){
           document.getElementById('ap-'+id).className='verified';
           var sp=document.getElementById('aps-'+id); sp.className='pill p-ver'; sp.textContent='verified';
-          toast('Pair '+id+' approved');
-          loadEIPCStats();
+          toast('Pair '+id+' approved'); loadEIPCStats();
         });
       });
     });
@@ -880,24 +933,22 @@ function loadAlignedPairs(docId) {
     });
   });
 }
- 
+
 // ══════════════════════════════════════════════════════
 // IOC
 // ══════════════════════════════════════════════════════
 function loadIOCFiles() {
   get('/api/ioc/files').then(function(files) {
-    // Populate select
     var sel = document.getElementById('ioc-file-select');
     sel.innerHTML = '<option value="">— select audio file —</option>'
       + files.map(function(f){ return '<option value="'+f.id+'">'+f.filename+' ('+f.region+') — '+f.status+'</option>'; }).join('');
-    // Table
     document.getElementById('ioc-tbody').innerHTML = files.length ? files.map(function(f){
       var dur = f.duration_seconds ? Math.floor(f.duration_seconds/60)+':'+(f.duration_seconds%60<10?'0':'')+f.duration_seconds%60 : '—';
       return '<tr><td style="font-family:var(--mono);font-size:12px">'+f.filename+'</td><td style="color:var(--mu)">'+(f.region||'—')+'</td><td style="color:var(--mu)">'+(f.speaker_gender||'—')+(f.speaker_age_range?' / '+f.speaker_age_range:'')+'</td><td style="text-align:right;font-family:var(--mono)">'+dur+'</td><td>'+pill(f.status)+'</td></tr>';
     }).join('') : '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mu)">No audio files yet — upload one</td></tr>';
   }).catch(function(){ document.getElementById('ioc-tbody').innerHTML='<tr><td colspan="5" style="color:var(--co);padding:20px">Error loading files</td></tr>'; });
 }
- 
+
 function loadIOCTranscript(fileId) {
   curIocFileId = fileId;
   get('/api/ioc/files').then(function(files){
@@ -910,27 +961,22 @@ function loadIOCTranscript(fileId) {
       +'<div class="txbox"><div class="txlbl">Auto-transcription (AI draft)</div><textarea id="auto-tx" readonly placeholder="No auto-transcription yet"></textarea></div>'
       +'<div class="txbox ok"><div class="txlbl">Human-corrected transcript</div><textarea id="corr-tx" placeholder="Type corrected transcript here…"></textarea></div>'
       +'</div>';
-    // Load existing transcript
     get('/api/ioc/transcript/'+fileId).then(function(t){
       if (t.auto_text) document.getElementById('auto-tx').value = t.auto_text;
       if (t.corrected_text) document.getElementById('corr-tx').value = t.corrected_text;
     }).catch(function(){});
   });
 }
- 
+
 function approveSegment() {
   if (!curIocFileId) { toast('Select an audio file first', true); return; }
   var corrText = document.getElementById('corr-tx');
-  if (!corrText) { toast('No transcript to save', true); return; }
-  var text = corrText.value.trim();
-  if (!text) { toast('Please type the corrected transcript first', true); return; }
-  post('/api/ioc/transcript', {audio_file_id: parseInt(curIocFileId), corrected_text: text, is_approved: true})
-    .then(function(r) {
-      toast('Transcript approved and saved to database');
-      loadIOCFiles();
-    }).catch(function(e){ toast('Save failed: '+e.message, true); });
+  if (!corrText || !corrText.value.trim()) { toast('Please type the corrected transcript first', true); return; }
+  post('/api/ioc/transcript', {audio_file_id: parseInt(curIocFileId), corrected_text: corrText.value.trim(), is_approved: true})
+    .then(function(){ toast('Transcript approved and saved'); loadIOCFiles(); })
+    .catch(function(e){ toast('Save failed: '+e.message, true); });
 }
- 
+
 function uploadAudio() {
   var file = document.getElementById('audio-file').files[0];
   if (!file) { toast('Please choose an audio file first', true); return; }
@@ -950,7 +996,7 @@ function uploadAudio() {
     loadIOCFiles();
   }).catch(function(e){ toast('Upload failed: '+e.message, true); });
 }
- 
+
 // ══════════════════════════════════════════════════════
 // SEARCH
 // ══════════════════════════════════════════════════════
@@ -963,13 +1009,13 @@ function runKWIC() {
   get('/api/search/kwic?q='+encodeURIComponent(q)+'&corpus='+corpus+'&limit=50')
     .then(function(data) {
       document.getElementById('kwic-count').innerHTML = data.total+' results for <strong>"'+escHtml(q)+'"</strong>';
-      if (!data.results.length) { document.getElementById('kwic-results').innerHTML='<div style="color:var(--mu);font-size:13px;padding:20px 0">No results found — try adding text to the corpus first.</div>'; return; }
+      if (!data.results.length) { document.getElementById('kwic-results').innerHTML='<div style="color:var(--mu);font-size:13px;padding:20px 0">No results found.</div>'; return; }
       document.getElementById('kwic-results').innerHTML = data.results.map(function(r){
         return '<div class="kr"><span class="kl">'+escHtml(r.left)+'</span><span class="kk">'+escHtml(r.keyword)+'</span><span class="krr">'+escHtml(r.right)+'</span><span class="ks">'+escHtml(r.source)+'</span></div>';
       }).join('');
     }).catch(function(e){ document.getElementById('kwic-results').innerHTML='<div style="color:var(--co);font-size:13px">Error: '+e.message+'</div>'; });
 }
- 
+
 function loadFrequency() {
   var corpus = document.getElementById('freq-corpus').value;
   document.getElementById('freq-tbody').innerHTML = '<tr><td colspan="5"><div class="loading"><span class="spin"></span>Computing frequency…</div></td></tr>';
@@ -986,7 +1032,7 @@ function loadFrequency() {
       }).join('');
     }).catch(function(e){ document.getElementById('freq-tbody').innerHTML='<tr><td colspan="5" style="color:var(--co);padding:20px">Error: '+e.message+'</td></tr>'; });
 }
- 
+
 function loadCorpusStats() {
   get('/api/search/stats').then(function(s) {
     document.getElementById('ss-tokens').textContent = s.total_tokens>999999?(s.total_tokens/1000000).toFixed(1)+'M':s.total_tokens.toLocaleString();
@@ -1000,65 +1046,91 @@ function loadCorpusStats() {
     }
   }).catch(function(){});
 }
- 
+
 // ══════════════════════════════════════════════════════
-// WIRE ALL EVENTS
+// WIRE EVENTS
 // ══════════════════════════════════════════════════════
 function wire() {
-  // Sidebar
-  document.getElementById('nav-dash').addEventListener('click',   function(){ showPage('dash'); loadDashboard(); });
-  document.getElementById('nav-inc').addEventListener('click',    function(){ showPage('inc'); loadDocSelect(); });
-  document.getElementById('nav-eipc').addEventListener('click',   function(){ showPage('eipc'); loadEIPCStats(); });
-  document.getElementById('nav-ioc').addEventListener('click',    function(){ showPage('ioc'); loadIOCFiles(); });
+  // Sidebar navigation
+  document.getElementById('nav-dash').addEventListener('click', function(){ showPage('dash'); loadDashboard(); });
+  document.getElementById('nav-inc').addEventListener('click', function(){
+    showPage('inc');
+    // ✅ Reset state — do NOT fire API with null
+    curDocId = null;
+    document.getElementById('doc-select').value = '';
+    document.getElementById('ocr-view').textContent = 'Select a document above to load its original text.';
+    document.getElementById('ocr-badge').textContent = '';
+    document.getElementById('ocr-score').textContent = '';
+    document.getElementById('inc-editor').value = '';
+    updateWC();
+    loadDocSelect();
+  });
+  document.getElementById('nav-eipc').addEventListener('click', function(){ showPage('eipc'); loadEIPCStats(); });
+  document.getElementById('nav-ioc').addEventListener('click',  function(){ showPage('ioc'); loadIOCFiles(); });
   document.getElementById('nav-search').addEventListener('click', function(){ showPage('search'); });
- 
-  // Tab switching
+
+  // Tabs
   ['inc','eipc','ioc','search'].forEach(function(mod){
     document.querySelectorAll('#'+mod+'-tabs .tab').forEach(function(t){
       t.addEventListener('click', function(){ switchTab(mod, this.getAttribute('data-tab')); });
     });
   });
- 
+
   // Dashboard
   document.getElementById('btn-refresh').addEventListener('click', loadDashboard);
- 
+
   // INC
   document.getElementById('inc-editor').addEventListener('input', updateWC);
   document.getElementById('btn-save-inc').addEventListener('click', saveINC);
   document.getElementById('btn-autofix').addEventListener('click', function(){
-    toast('Auto-fix: review your text for common OCR errors like 0→o, 1→l, rn→m');
+    var text = document.getElementById('inc-editor').value;
+    if (!text.trim()) { toast('Paste text in the right panel first', true); return; }
+    // Basic OCR fixes
+    var fixed = text
+      .replace(/\b0\b/g, 'o')
+      .replace(/\b1\b/g, 'l')
+      .replace(/rn/g, 'm')
+      .replace(/\s+/g, ' ').trim();
+    document.getElementById('inc-editor').value = fixed;
+    updateWC();
+    toast('Auto-fix applied — review changes carefully');
   });
+
+  // ✅ FIXED: doc-select change handler
   document.getElementById('doc-select').addEventListener('change', function(){
-    curDocId = this.value;
-    if (!curDocId) { document.getElementById('ocr-view').textContent='Select a document above to load its OCR text.'; document.getElementById('ocr-score').textContent=''; return; }
-    // Load existing saved text if any
-    get('/api/inc/documents/'+curDocId+'/text').then(function(t){
-      if (t.text) {
-        document.getElementById('inc-editor').value = t.text;
-        document.getElementById('ocr-view').textContent = t.text;
-        document.getElementById('ocr-score').textContent = 'Last saved: '+(t.word_count||0).toLocaleString()+' words';
-        updateWC();
-        toast('Loaded saved text for this document');
-      } else {
-        document.getElementById('ocr-view').textContent = 'No text saved yet for this document. Paste your corrected text in the right panel.';
-        document.getElementById('ocr-score').textContent = 'No text yet';
-        document.getElementById('inc-editor').value = '';
-        updateWC();
-      }
-    });
+    var val = this.value;
+    if (!val) {
+      curDocId = null;
+      document.getElementById('ocr-view').textContent = 'Select a document above to load its original text.';
+      document.getElementById('ocr-badge').textContent = '';
+      document.getElementById('ocr-score').textContent = '';
+      document.getElementById('inc-editor').value = '';
+      updateWC();
+      return;
+    }
+    loadDocText(val);
   });
+
   document.getElementById('inc-uz').addEventListener('click', function(){ document.getElementById('inc-file').click(); });
   document.getElementById('inc-file').addEventListener('change', function(){
-    if (this.files[0]){ var n=document.getElementById('inc-fname'); n.textContent=this.files[0].name; n.style.display='block'; document.getElementById('inc-uz').classList.add('loaded'); }
+    if (this.files[0]){
+      var n=document.getElementById('inc-fname');
+      n.textContent=this.files[0].name;
+      n.style.display='block';
+      document.getElementById('inc-uz').classList.add('loaded');
+    }
   });
   document.getElementById('btn-add-inc').addEventListener('click', addINCDoc);
   document.getElementById('inc-search').addEventListener('input', loadIncDocs);
   document.getElementById('inc-filter').addEventListener('change', loadIncDocs);
- 
+
   // EIPC
   document.getElementById('en-zone').addEventListener('click', function(){ document.getElementById('en-file').click(); });
   document.getElementById('en-file').addEventListener('change', uploadEN);
-  document.getElementById('zu-zone').addEventListener('click', function(){ if(!enDocId){toast('Upload the English file first',true);return;} document.getElementById('zu-file').click(); });
+  document.getElementById('zu-zone').addEventListener('click', function(){
+    if(!enDocId){toast('Upload the English file first',true);return;}
+    document.getElementById('zu-file').click();
+  });
   document.getElementById('zu-file').addEventListener('change', uploadZU);
   document.getElementById('align-btn').addEventListener('click', runAlign);
   document.getElementById('btn-csv').addEventListener('click', function(){ window.open(API+'/api/eipc/export/csv','_blank'); });
@@ -1073,7 +1145,7 @@ function wire() {
   });
   document.getElementById('btn-prev-pairs').addEventListener('click', function(){ if(pairPage>0){pairPage--;loadPairs();} });
   document.getElementById('btn-next-pairs').addEventListener('click', function(){ pairPage++; loadPairs(); });
- 
+
   // IOC
   document.getElementById('ioc-file-select').addEventListener('change', function(){ if(this.value) loadIOCTranscript(this.value); });
   document.getElementById('btn-approve-seg').addEventListener('click', approveSegment);
@@ -1083,7 +1155,7 @@ function wire() {
     if(this.files[0]){ var n=document.getElementById('audio-fname'); n.textContent=this.files[0].name; n.style.display='block'; document.getElementById('audio-uz').classList.add('loaded'); }
   });
   document.getElementById('btn-upload-audio').addEventListener('click', uploadAudio);
- 
+
   // Search
   document.getElementById('btn-kwic').addEventListener('click', runKWIC);
   document.getElementById('kwic-input').addEventListener('keydown', function(e){ if(e.key==='Enter') runKWIC(); });
@@ -1095,7 +1167,7 @@ function wire() {
   });
   document.getElementById('btn-freq').addEventListener('click', loadFrequency);
 }
- 
+
 // ══════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════
@@ -1104,7 +1176,7 @@ function init() {
   wire();
   loadDashboard();
 }
- 
+
 init();
 </script>
 </body>
