@@ -201,6 +201,7 @@ tr:hover td{background:var(--s2);}
     <div class="tba">
       <button class="btn btn-sm" id="btn-autofix">⚡ Auto-fix OCR</button>
       <button class="btn btn-tl" id="btn-save-inc">✓ Save to Corpus</button>
+      <button class="btn" id="btn-mark-done" style="display:none;background:var(--gn);color:#fff;border-color:var(--gn)">☑ Mark Complete</button>
     </div>
   </div>
   <div class="ca">
@@ -1082,6 +1083,14 @@ function wire() {
   // INC
   document.getElementById('inc-editor').addEventListener('input', updateWC);
   document.getElementById('btn-save-inc').addEventListener('click', saveINC);
+  document.getElementById('btn-mark-done').addEventListener('click', function(){
+  if (!curDocId) return;
+  patch('/api/inc/documents/'+curDocId, {status:'completed'}).then(function(){
+    toast('Document marked as complete ✓');
+    document.getElementById('btn-mark-done').style.display='none';
+    loadDocSelect();
+  }).catch(function(e){ toast('Error: '+e.message, true); });
+});
   document.getElementById('btn-autofix').addEventListener('click', function(){
     var text = document.getElementById('inc-editor').value;
     if (!text.trim()) { toast('Paste text in the right panel first', true); return; }
