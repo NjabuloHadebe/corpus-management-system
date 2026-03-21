@@ -258,6 +258,7 @@ def get_inc_latest_text(doc_id: int):
     conn = get_db()
     try:
         cur = conn.cursor()
+        # Get saved corrected text
         cur.execute("""
             SELECT text, word_count, saved_by, saved_at
             FROM inc_texts
@@ -265,10 +266,27 @@ def get_inc_latest_text(doc_id: int):
             ORDER BY saved_at DESC LIMIT 1
         """, (doc_id,))
         row = cur.fetchone()
+        # Also get OCR original from document record
+        cur.execute("""
+            SELECT title, filepath, ocr_text
+            FROM inc_documents WHERE id=%s
+        """, (doc_id,))
+        doc = cur.fetchone()
+        ocr_text = ""
+        if doc and doc.get("ocr_text"):
+            ocr_text = doc["ocr_text"]
+        elif doc and doc.get("filepath"):
+            # Try to read raw file content
+            try:
+                with open(doc["filepath"], "r", errors="ignore") as f:
+                    ocr_text = f.read()[:5000]  # first 5000 chars
+            except:
+                ocr_text = ""
         if not row:
-            return {"text": "", "word_count": 0}
+            return {"text": "", "word_count": 0, "ocr_text": ocr_text}
         d = dict(row)
         if d.get("saved_at"): d["saved_at"] = d["saved_at"].isoformat()
+        d["ocr_text"] = ocr_text
         return d
     finally:
         conn.close()
@@ -374,15 +392,23 @@ def auto_align(doc_id: int, aligned_by: str = "anonymous"):
             raise HTTPException(404, "Document not found")
         if not doc["en_filepath"] or not doc["zu_filepath"]:
             raise HTTPException(400, "Both EN and ZU files must be uploaded first")
+        if not os.path.exists(doc["en_filepath"]):
+            raise HTTPException(400, "English file not found on disk — please re-upload")
+        if not os.path.exists(doc["zu_filepath"]):
+            raise HTTPException(400, "IsiZulu file not found on disk — please re-upload")
 
         with open(doc["en_filepath"], "r", errors="ignore") as f:
             en_sents = split_sentences(f.read())
         with open(doc["zu_filepath"], "r", errors="ignore") as f:
             zu_sents = split_sentences(f.read())
 
+        if not en_sents:
+            raise HTTPException(400, "No sentences found in English file")
+        if not zu_sents:
+            raise HTTPException(400, "No sentences found in IsiZulu file")
+
         created = 0
         for en, zu in zip(en_sents, zu_sents):
-            # Simple length-ratio confidence heuristic
             ratio = min(len(en), len(zu)) / max(len(en), len(zu)) if max(len(en), len(zu)) > 0 else 0
             confidence = round(0.70 + ratio * 0.25, 2)
             cur.execute("""
@@ -393,6 +419,11 @@ def auto_align(doc_id: int, aligned_by: str = "anonymous"):
 
         conn.commit()
         return {"pairs_created": created, "document_id": doc_id}
+    except HTTPException:
+        raise
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(500, f"Alignment failed: {str(e)}")
     finally:
         conn.close()
 

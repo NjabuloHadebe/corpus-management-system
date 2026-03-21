@@ -598,11 +598,20 @@ function loadDashboard() {
 // INC
 // ══════════════════════════════════════════════════════
 function loadDocSelect() {
-  get('/api/inc/documents').then(function(docs) {
-    var sel = document.getElementById('doc-select');
-    sel.innerHTML = '<option value="">— select document —</option>'
-      + docs.map(function(d){ return '<option value="'+d.id+'">'+d.title+' ('+d.status+')</option>'; }).join('');
-  });
+  get('/api/inc/documents/'+curDocId+'/text').then(function(t){
+  // Always show OCR original on left panel
+  document.getElementById('ocr-view').textContent = t.ocr_text || 'No original text available for this document.';
+  if (t.text) {
+    document.getElementById('inc-editor').value = t.text;
+    document.getElementById('ocr-score').textContent = 'Last saved: '+(t.word_count||0).toLocaleString()+' words';
+    updateWC();
+    toast('Loaded saved text for this document');
+  } else {
+    document.getElementById('ocr-score').textContent = 'No corrections saved yet';
+    document.getElementById('inc-editor').value = '';
+    updateWC();
+  }
+});
 }
  
 function loadIncDocs() {
