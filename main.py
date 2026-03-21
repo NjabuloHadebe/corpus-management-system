@@ -1,16 +1,17 @@
 """
 IsiZulu Corpus Management System — Backend
 Run locally:  uvicorn main:app --reload
-Deploy:       Push to GitHub, connect to Render.com (free web service)
+Deploy:       Push to GitHub, connect to Render.com
 """
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
-import os, re, io, csv
+import os, re, io, csv, secrets
 
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -34,6 +35,31 @@ UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "uploads")
 os.makedirs(os.path.join(UPLOAD_DIR, "inc"),  exist_ok=True)
 os.makedirs(os.path.join(UPLOAD_DIR, "eipc"), exist_ok=True)
 os.makedirs(os.path.join(UPLOAD_DIR, "ioc"),  exist_ok=True)
+
+# ── Auth ──────────────────────────────────────────────────────────────────────
+APP_PASSWORD = os.environ.get("APP_PASSWORD", "ukzn2025!")
+valid_tokens: set = set()
+bearer = HTTPBearer(auto_error=False)
+
+def verify_token(credentials: HTTPAuthorizationCredentials = Depends(bearer)):
+    if not credentials or credentials.credentials not in valid_tokens:
+        raise HTTPException(401, "Invalid or expired token — please log in again")
+    return credentials.credentials
+
+@app.post("/api/login")
+def login(payload: dict):
+    password = payload.get("password", "")
+    if password != APP_PASSWORD:
+        raise HTTPException(401, "Incorrect password")
+    token = secrets.token_hex(32)
+    valid_tokens.add(token)
+    return {"token": token, "message": "Login successful"}
+
+@app.post("/api/logout")
+def logout(payload: dict):
+    token = payload.get("token", "")
+    valid_tokens.discard(token)
+    return {"message": "Logged out"}
 
 # ── Models ────────────────────────────────────────────────────────────────────
 class INCTextSave(BaseModel):
@@ -72,17 +98,17 @@ def split_sentences(text: str) -> List[str]:
     return [s.strip() for s in sentences if len(s.strip()) > 10]
 
 # ══════════════════════════════════════════════════════════════════════════════
-# HEALTH
+# HEALTH (public)
 # ══════════════════════════════════════════════════════════════════════════════
 @app.get("/api/health")
 def health():
     return {"status": "ok", "service": "IsiZulu CMS"}
 
 # ══════════════════════════════════════════════════════════════════════════════
-# DASHBOARD
+# DASHBOARD (protected)
 # ══════════════════════════════════════════════════════════════════════════════
 @app.get("/api/dashboard")
-def dashboard():
+def dashboard(token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -118,10 +144,11 @@ def dashboard():
         conn.close()
 
 # ══════════════════════════════════════════════════════════════════════════════
-# INC
+# INC (protected)
 # ══════════════════════════════════════════════════════════════════════════════
 @app.get("/api/inc/documents")
-def list_inc_documents(status: Optional[str] = None, search: Optional[str] = None):
+def list_inc_documents(status: Optional[str] = None, search: Optional[str] = None,
+                       token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -144,33 +171,24 @@ def list_inc_documents(status: Optional[str] = None, search: Optional[str] = Non
 
 @app.post("/api/inc/documents")
 async def add_inc_document(
-    title: str = Form(...),
-    domain: str = Form(None),
-    year: int = Form(None),
-    region: str = Form(None),
-    uploaded_by: str = Form("anonymous"),
-    file: UploadFile = File(None),
+    title: str = Form(...), domain: str = Form(None),
+    year: int = Form(None), region: str = Form(None),
+    uploaded_by: str = Form("anonymous"), file: UploadFile = File(None),
+    token: str = Depends(verify_token)
 ):
     conn = get_db()
     try:
-        filepath = None
-        filename = None
-        ocr_text = ""
-
+        filepath = None; filename = None; ocr_text = ""
         if file and file.filename:
             contents = await file.read()
             safe = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}"
             filepath = os.path.join(UPLOAD_DIR, "inc", safe)
-            with open(filepath, "wb") as f:
-                f.write(contents)
+            with open(filepath, "wb") as f: f.write(contents)
             filename = file.filename
-            # ✅ Read and store OCR text immediately
             try:
-                raw = contents.decode("utf-8", errors="ignore")
-                ocr_text = clean_text(raw)[:20000]
+                ocr_text = clean_text(contents.decode("utf-8", errors="ignore"))[:20000]
             except Exception:
                 ocr_text = ""
-
         cur = conn.cursor()
         cur.execute("""
             INSERT INTO inc_documents (title, filename, filepath, domain, year, region, uploaded_by, ocr_text)
@@ -182,14 +200,13 @@ async def add_inc_document(
         if doc.get("created_at"): doc["created_at"] = doc["created_at"].isoformat()
         return doc
     except Exception as e:
-        conn.rollback()
-        raise HTTPException(500, f"Failed to add document: {str(e)}")
+        conn.rollback(); raise HTTPException(500, f"Failed: {str(e)}")
     finally:
         conn.close()
 
 
 @app.patch("/api/inc/documents/{doc_id}")
-def update_inc_document(doc_id: int, data: INCDocUpdate):
+def update_inc_document(doc_id: int, data: INCDocUpdate, token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -207,7 +224,7 @@ def update_inc_document(doc_id: int, data: INCDocUpdate):
 
 
 @app.post("/api/inc/save-text")
-def save_inc_text(data: INCTextSave):
+def save_inc_text(data: INCTextSave, token: str = Depends(verify_token)):
     conn = get_db()
     try:
         clean = clean_text(data.text)
@@ -216,27 +233,24 @@ def save_inc_text(data: INCTextSave):
         cur = conn.cursor()
         cur.execute("INSERT INTO inc_texts (document_id, text, word_count, saved_by) VALUES (%s,%s,%s,%s)",
                     (data.document_id, clean, words, data.saved_by))
-        cur.execute("""UPDATE inc_documents SET word_count=%s, token_count=%s, status='in_progress', updated_at=NOW() WHERE id=%s""",
+        cur.execute("UPDATE inc_documents SET word_count=%s, token_count=%s, status='in_progress', updated_at=NOW() WHERE id=%s",
                     (words, tokens, data.document_id))
         conn.commit()
         return {"message": "Saved", "word_count": words, "token_count": tokens}
     except Exception as e:
-        conn.rollback()
-        raise HTTPException(500, f"Save failed: {str(e)}")
+        conn.rollback(); raise HTTPException(500, f"Save failed: {str(e)}")
     finally:
         conn.close()
 
 
 @app.get("/api/inc/documents/{doc_id}/text")
-def get_inc_latest_text(doc_id: int):
+def get_inc_latest_text(doc_id: int, token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
-        # ✅ Get document with OCR text
         cur.execute("SELECT title, filepath, ocr_text FROM inc_documents WHERE id=%s", (doc_id,))
         doc = cur.fetchone()
         if not doc: raise HTTPException(404, "Document not found")
-
         ocr_text = ""
         if doc.get("ocr_text"):
             ocr_text = doc["ocr_text"]
@@ -246,12 +260,7 @@ def get_inc_latest_text(doc_id: int):
                     ocr_text = clean_text(f.read())[:20000]
             except Exception:
                 ocr_text = ""
-
-        # ✅ Get latest corrected text
-        cur.execute("""
-            SELECT text, word_count, saved_by, saved_at FROM inc_texts
-            WHERE document_id=%s ORDER BY saved_at DESC LIMIT 1
-        """, (doc_id,))
+        cur.execute("SELECT text, word_count, saved_by, saved_at FROM inc_texts WHERE document_id=%s ORDER BY saved_at DESC LIMIT 1", (doc_id,))
         row = cur.fetchone()
         if not row:
             return {"text": "", "word_count": 0, "ocr_text": ocr_text, "saved_at": None}
@@ -264,7 +273,7 @@ def get_inc_latest_text(doc_id: int):
 
 
 @app.get("/api/inc/stats")
-def inc_stats():
+def inc_stats(token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -284,13 +293,13 @@ def inc_stats():
     finally:
         conn.close()
 
-
 # ══════════════════════════════════════════════════════════════════════════════
-# EIPC
+# EIPC (protected)
 # ══════════════════════════════════════════════════════════════════════════════
 @app.post("/api/eipc/upload-en")
 async def upload_en(file: UploadFile = File(...), title: str = Form(None),
-                    domain: str = Form(None), year: int = Form(None), uploaded_by: str = Form("anonymous")):
+                    domain: str = Form(None), year: int = Form(None),
+                    uploaded_by: str = Form("anonymous"), token: str = Depends(verify_token)):
     contents = await file.read()
     safe = f"en_{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}"
     filepath = os.path.join(UPLOAD_DIR, "eipc", safe)
@@ -311,7 +320,7 @@ async def upload_en(file: UploadFile = File(...), title: str = Form(None),
 
 
 @app.post("/api/eipc/upload-zu/{doc_id}")
-async def upload_zu(doc_id: int, file: UploadFile = File(...)):
+async def upload_zu(doc_id: int, file: UploadFile = File(...), token: str = Depends(verify_token)):
     contents = await file.read()
     safe = f"zu_{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}"
     filepath = os.path.join(UPLOAD_DIR, "eipc", safe)
@@ -329,7 +338,7 @@ async def upload_zu(doc_id: int, file: UploadFile = File(...)):
 
 
 @app.post("/api/eipc/align/{doc_id}")
-def auto_align(doc_id: int, aligned_by: str = "anonymous"):
+def auto_align(doc_id: int, aligned_by: str = "anonymous", token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -342,12 +351,10 @@ def auto_align(doc_id: int, aligned_by: str = "anonymous"):
             raise HTTPException(400, "English file not found — please re-upload")
         if not os.path.exists(doc["zu_filepath"]):
             raise HTTPException(400, "IsiZulu file not found — please re-upload")
-        with open(doc["en_filepath"], "r", errors="ignore") as f:
-            en_sents = split_sentences(f.read())
-        with open(doc["zu_filepath"], "r", errors="ignore") as f:
-            zu_sents = split_sentences(f.read())
-        if not en_sents: raise HTTPException(400, "No sentences found in English file")
-        if not zu_sents: raise HTTPException(400, "No sentences found in IsiZulu file")
+        with open(doc["en_filepath"], "r", errors="ignore") as f: en_sents = split_sentences(f.read())
+        with open(doc["zu_filepath"], "r", errors="ignore") as f: zu_sents = split_sentences(f.read())
+        if not en_sents: raise HTTPException(400, "No sentences in English file")
+        if not zu_sents: raise HTTPException(400, "No sentences in IsiZulu file")
         created = 0
         for en, zu in zip(en_sents, zu_sents):
             ratio = min(len(en), len(zu)) / max(len(en), len(zu)) if max(len(en), len(zu)) > 0 else 0
@@ -359,28 +366,25 @@ def auto_align(doc_id: int, aligned_by: str = "anonymous"):
             created += 1
         conn.commit()
         return {"pairs_created": created, "document_id": doc_id}
-    except HTTPException:
-        raise
+    except HTTPException: raise
     except Exception as e:
-        conn.rollback()
-        raise HTTPException(500, f"Alignment failed: {str(e)}")
+        conn.rollback(); raise HTTPException(500, f"Alignment failed: {str(e)}")
     finally:
         conn.close()
 
 
 @app.get("/api/eipc/pairs")
 def list_pairs(doc_id: Optional[int] = None, status: Optional[str] = None,
-               search: Optional[str] = None, skip: int = 0, limit: int = 50):
+               search: Optional[str] = None, skip: int = 0, limit: int = 50,
+               token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
-        sql = "SELECT * FROM eipc_pairs WHERE 1=1"
-        params = []
+        sql = "SELECT * FROM eipc_pairs WHERE 1=1"; params = []
         if doc_id: sql += " AND source_doc_id=%s"; params.append(doc_id)
         if status: sql += " AND status=%s"; params.append(status)
         if search:
-            sql += " AND (en_text ILIKE %s OR zu_text ILIKE %s)"
-            params += [f"%{search}%", f"%{search}%"]
+            sql += " AND (en_text ILIKE %s OR zu_text ILIKE %s)"; params += [f"%{search}%", f"%{search}%"]
         sql += " ORDER BY id OFFSET %s LIMIT %s"; params += [skip, limit]
         cur.execute(sql, params)
         result = []
@@ -401,7 +405,7 @@ def list_pairs(doc_id: Optional[int] = None, status: Optional[str] = None,
 
 
 @app.patch("/api/eipc/pairs/{pair_id}")
-def update_pair(pair_id: int, data: PairUpdate):
+def update_pair(pair_id: int, data: PairUpdate, token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -424,7 +428,7 @@ def update_pair(pair_id: int, data: PairUpdate):
 
 
 @app.get("/api/eipc/export/csv")
-def export_csv(status: Optional[str] = "verified"):
+def export_csv(status: Optional[str] = "verified", token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -434,7 +438,7 @@ def export_csv(status: Optional[str] = "verified"):
         cur.execute(sql + " ORDER BY id", params)
         output = io.StringIO()
         writer = csv.writer(output)
-        writer.writerow(["english", "isizulu", "confidence", "status"])
+        writer.writerow(["english","isizulu","confidence","status"])
         for r in cur.fetchall(): writer.writerow([r["en_text"], r["zu_text"], r["confidence"], r["status"]])
         output.seek(0)
         return StreamingResponse(io.BytesIO(output.getvalue().encode()), media_type="text/csv",
@@ -444,7 +448,7 @@ def export_csv(status: Optional[str] = "verified"):
 
 
 @app.get("/api/eipc/export/tmx")
-def export_tmx(status: Optional[str] = "verified"):
+def export_tmx(status: Optional[str] = "verified", token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -465,7 +469,7 @@ def export_tmx(status: Optional[str] = "verified"):
 
 
 @app.get("/api/eipc/stats")
-def eipc_stats():
+def eipc_stats(token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -488,17 +492,15 @@ def eipc_stats():
     finally:
         conn.close()
 
-
 # ══════════════════════════════════════════════════════════════════════════════
-# IOC
+# IOC (protected)
 # ══════════════════════════════════════════════════════════════════════════════
 @app.get("/api/ioc/files")
-def list_ioc_files(status: Optional[str] = None):
+def list_ioc_files(status: Optional[str] = None, token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
-        sql = "SELECT * FROM ioc_files WHERE 1=1"
-        params = []
+        sql = "SELECT * FROM ioc_files WHERE 1=1"; params = []
         if status: sql += " AND status=%s"; params.append(status)
         cur.execute(sql + " ORDER BY created_at DESC", params)
         result = []
@@ -515,7 +517,7 @@ def list_ioc_files(status: Optional[str] = None):
 async def upload_audio(file: UploadFile = File(...), region: str = Form(None),
                        speaker_gender: str = Form(None), speaker_age_range: str = Form(None),
                        topic: str = Form(None), duration_seconds: int = Form(None),
-                       uploaded_by: str = Form("anonymous")):
+                       uploaded_by: str = Form("anonymous"), token: str = Depends(verify_token)):
     contents = await file.read()
     safe = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}"
     filepath = os.path.join(UPLOAD_DIR, "ioc", safe)
@@ -536,7 +538,7 @@ async def upload_audio(file: UploadFile = File(...), region: str = Form(None),
 
 
 @app.post("/api/ioc/transcript")
-def save_transcript(data: TranscriptSave):
+def save_transcript(data: TranscriptSave, token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -556,7 +558,7 @@ def save_transcript(data: TranscriptSave):
 
 
 @app.get("/api/ioc/transcript/{file_id}")
-def get_transcript(file_id: int):
+def get_transcript(file_id: int, token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -571,7 +573,7 @@ def get_transcript(file_id: int):
 
 
 @app.get("/api/ioc/stats")
-def ioc_stats():
+def ioc_stats(token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -587,9 +589,8 @@ def ioc_stats():
     finally:
         conn.close()
 
-
 # ══════════════════════════════════════════════════════════════════════════════
-# SEARCH
+# SEARCH (protected)
 # ══════════════════════════════════════════════════════════════════════════════
 CONTEXT = 6
 
@@ -605,7 +606,8 @@ def kwic_from_text(full_text, keyword, source, corpus, results, limit):
 
 
 @app.get("/api/search/kwic")
-def kwic_search(q: str = Query(..., min_length=2), corpus: str = Query(default="all"), limit: int = Query(default=50, le=200)):
+def kwic_search(q: str = Query(..., min_length=2), corpus: str = Query(default="all"),
+                limit: int = Query(default=50, le=200), token: str = Depends(verify_token)):
     conn = get_db(); results = []
     try:
         cur = conn.cursor()
@@ -625,11 +627,11 @@ def kwic_search(q: str = Query(..., min_length=2), corpus: str = Query(default="
 
 
 @app.get("/api/search/frequency")
-def word_frequency(corpus: str = Query(default="inc"), top_n: int = Query(default=50, le=200)):
+def word_frequency(corpus: str = Query(default="inc"), top_n: int = Query(default=50, le=200),
+                   token: str = Depends(verify_token)):
     conn = get_db()
     try:
-        cur = conn.cursor()
-        all_text = ""
+        cur = conn.cursor(); all_text = ""
         if corpus == "inc":
             cur.execute("SELECT text FROM inc_texts")
             all_text = " ".join(r["text"] for r in cur.fetchall() if r["text"])
@@ -644,8 +646,7 @@ def word_frequency(corpus: str = Query(default="inc"), top_n: int = Query(defaul
             all_text = " ".join(r["corrected_text"] for r in cur.fetchall() if r["corrected_text"])
         if not all_text.strip(): return []
         words = re.findall(r'\b[a-zA-ZÀ-ÿ]{2,}\b', all_text.lower())
-        total = len(words)
-        freq: dict = {}
+        total = len(words); freq: dict = {}
         for w in words: freq[w] = freq.get(w, 0) + 1
         top = sorted(freq.items(), key=lambda x: x[1], reverse=True)[:top_n]
         return [{"rank": i+1, "word": w, "frequency": c, "per_million": int(c/total*1_000_000) if total else 0}
@@ -655,7 +656,7 @@ def word_frequency(corpus: str = Query(default="inc"), top_n: int = Query(defaul
 
 
 @app.get("/api/search/stats")
-def corpus_stats():
+def corpus_stats(token: str = Depends(verify_token)):
     conn = get_db()
     try:
         cur = conn.cursor()
@@ -671,7 +672,6 @@ def corpus_stats():
                 "approved_transcripts": int(transcripts), "by_domain": by_domain}
     finally:
         conn.close()
-
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SERVE FRONTEND
