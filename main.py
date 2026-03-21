@@ -321,8 +321,14 @@ def inc_stats():
 # ══════════════════════════════════════════════════════════════════════════════
 
 def split_sentences(text: str) -> List[str]:
-    sentences = re.split(r'(?<=[.!?])\s+', text.strip())
-    return [s.strip() for s in sentences if len(s.strip()) > 5]
+    # Remove NUL characters and other problematic chars
+    text = text.replace('\x00', ' ')
+    text = text.replace('\r\n', '\n').replace('\r', '\n')
+    # Remove non-printable characters except newlines and tabs
+    text = re.sub(r'[^\x09\x0A\x20-\x7E\x80-\xFF]', ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    return [s.strip() for s in sentences if len(s.strip()) > 10]
 
 
 @app.post("/api/eipc/upload-en")
