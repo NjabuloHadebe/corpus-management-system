@@ -695,6 +695,7 @@ function loadDocText(docId) {
       document.getElementById('inc-editor').value = '';
       document.getElementById('ocr-score').textContent = 'No corrections saved yet';
     }
+    document.getElementById('btn-mark-done').style.display = 'inline-flex';
     updateWC();
   }).catch(function(e){
     document.getElementById('ocr-view').textContent = 'Error loading document: '+e.message;
