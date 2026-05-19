@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Corpus Management System</title>
+<title>IsiZulu National Corpus · UKZN</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -23,7 +23,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100
 .app{display:flex;min-height:100vh;}
 #sb{width:240px;min-width:240px;background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;height:100vh;position:fixed;left:0;top:0;z-index:100;}
 #main{margin-left:240px;flex:1;min-height:100vh;}
-.slogo{padding:20px 18px 16px;border-bottom:1px solid var(--bd);}
+.slogo{padding:20px 18px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px;}
+.ukzn-logo-img{width:48px;height:48px;object-fit:contain;}
+.slogo-text{flex:1;}
 .slogo-title{font-size:16px;font-weight:600;}
 .slogo-sub{font-size:11px;color:var(--mu);margin-top:2px;letter-spacing:.04em;}
 .slogo-tag{display:inline-block;margin-top:8px;font-size:10px;font-family:var(--mono);background:var(--tl-l);color:var(--tl);border-radius:4px;padding:2px 8px;font-weight:500;}
@@ -51,6 +53,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100
 .btn-pu{background:var(--pu);color:#fff;border-color:var(--pu);}
 .btn-pu:hover{background:#4a2f9a;}
 .btn-co{background:var(--co);color:#fff;border-color:var(--co);}
+.btn-red{background:#c23b22;color:#fff;border-color:#c23b22;}
+.btn-red:hover{background:#a8321c;}
 .btn-sm{padding:5px 12px;font-size:12px;}
 .tabs{display:flex;margin-bottom:22px;border-bottom:1px solid var(--bd);}
 .tab{padding:9px 18px;font-size:13.5px;cursor:pointer;color:var(--mu);transition:all .12s;border-bottom:2px solid transparent;margin-bottom:-1px;}
@@ -146,6 +150,10 @@ tr:hover td{background:var(--s2);}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px;}
 .doc-row{cursor:pointer;}
 .doc-row:hover td{background:var(--tl-l)!important;}
+.delete-btn{background:var(--co);color:#fff;border:none;padding:4px 10px;border-radius:var(--r);cursor:pointer;font-size:11px;font-weight:500;margin-left:8px;}
+.delete-btn:hover{background:#a8321c;}
+.delete-icon{background:transparent;color:var(--co);border:1px solid var(--co);padding:4px 10px;border-radius:var(--r);cursor:pointer;font-size:11px;transition:all .12s;}
+.delete-icon:hover{background:var(--co);color:#fff;}
 </style>
 </head>
 <body>
@@ -173,9 +181,12 @@ tr:hover td{background:var(--s2);}
 <div class="app">
 <nav id="sb">
   <div class="slogo">
-    <div class="slogo-title">IsiZulu Corpus</div>
-    <div class="slogo-sub">Corpus Management System</div>
-    <div class="slogo-tag">UKZN Language Lab</div>
+    <img class="ukzn-logo-img" src="https://ukzn.ac.za/wp-content/uploads/2020/03/Transp_bg.png" alt="UKZN">
+    <div class="slogo-text">
+      <div class="slogo-title">ISIZULU NATIONAL CORPUS</div>
+      <div class="slogo-sub">Corpus Management System</div>
+      <div class="slogo-tag">UKZN Language Lab</div>
+    </div>
   </div>
   <div class="snav">
     <div class="nav-lbl">Corpora</div>
@@ -191,7 +202,6 @@ tr:hover td{background:var(--s2);}
     <div class="srow"><span>EIPC verified</span><span id="sb-pair-val">—</span></div>
     <div class="srow"><span>IOC hours</span><span id="sb-hour-val">—</span></div>
   </div>
-  <!-- Logout button -->
   <div style="padding:10px 18px;border-top:1px solid var(--bd)">
     <button onclick="doLogout()" style="width:100%;background:none;border:1px solid var(--bd);border-radius:var(--r);padding:6px;font-family:var(--font);font-size:12px;color:var(--mu);cursor:pointer">Sign Out</button>
   </div>
@@ -223,6 +233,7 @@ tr:hover td{background:var(--s2);}
     <div class="tba">
       <button class="btn btn-sm" id="btn-autofix">⚡ Auto-fix OCR</button>
       <button class="btn btn-tl" id="btn-save-inc">✓ Save to Corpus</button>
+      <button class="btn btn-red btn-sm" id="btn-delete-inc" style="display:none">🗑 Delete Document</button>
       <button class="btn" id="btn-mark-done" style="display:none;background:var(--gn);color:#fff;border-color:var(--gn)">☑ Mark Complete</button>
     </div>
   </div>
@@ -303,8 +314,8 @@ tr:hover td{background:var(--s2);}
       </div>
       <div class="tw">
         <table>
-          <thead><tr><th>Document</th><th>Domain</th><th>Year</th><th style="text-align:right">Words</th><th style="text-align:right">Tokens</th><th>Status</th></tr></thead>
-          <tbody id="inc-tbody"><tr><td colspan="6"><div class="loading"><span class="spin"></span>Loading…</div></td></tr></tbody>
+          <thead><tr><th>Document</th><th>Domain</th><th>Year</th><th style="text-align:right">Words</th><th style="text-align:right">Tokens</th><th>Status</th><th style="width:60px">Action</th></tr></thead>
+          <tbody id="inc-tbody"><tr><td colspan="7"><div class="loading"><span class="spin"></span>Loading…</div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -366,7 +377,7 @@ tr:hover td{background:var(--s2);}
         <span class="chip" data-status="flagged">Flagged</span>
         <span style="margin-left:auto;font-size:12px;color:var(--mu);font-family:var(--mono)" id="pair-total">—</span>
       </div>
-      <div class="tw"><table class="at"><thead><tr><th>#</th><th>English</th><th>IsiZulu</th><th>Status</th><th>Actions</th></tr></thead><tbody id="review-tbody"><tr><td colspan="5"><div class="loading"><span class="spin"></span>Loading…</div></td></tr></tbody></table></div>
+      <div class="tw"><table class="at"><thead><tr><th>#</th><th>English</th><th>IsiZulu</th><th>Status</th><th>Actions</th></tr></thead><tbody id="review-tbody"><tr><td colspan="5"><div class="loading"><span class="spin"></span>Loading…</div></div></td></tbody></table></div>
       <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
         <button class="btn btn-sm" id="btn-prev-pairs">← Previous</button>
         <span style="font-size:12px;color:var(--mu)" id="pair-page-info">Page 1</span>
@@ -403,13 +414,14 @@ tr:hover td{background:var(--s2);}
         <span style="font-size:13px;color:var(--mu)">Editing:</span>
         <select id="ioc-file-select" style="flex:1;max-width:320px;background:var(--sf);border:1px solid var(--b2);border-radius:var(--r);padding:7px 12px;font-family:var(--font);font-size:13px;outline:none;color:var(--tx)"><option value="">— select audio file —</option></select>
         <button class="btn btn-sm btn-tl" id="btn-approve-seg">✓ Approve &amp; Save</button>
+        <button class="btn btn-sm btn-red" id="btn-delete-ioc" style="display:none">🗑 Delete File</button>
       </div>
       <div class="acard" id="ioc-editor-card">
         <div style="text-align:center;padding:30px;color:var(--mu)">Select an audio file above to start transcribing</div>
       </div>
     </div>
     <div id="ioc-files" style="display:none">
-      <div class="tw"><table><thead><tr><th>File</th><th>Region</th><th>Speaker</th><th style="text-align:right">Duration</th><th>Status</th></tr></thead><tbody id="ioc-tbody"><tr><td colspan="5"><div class="loading"><span class="spin"></span>Loading…</div></td></tr></tbody></table></div>
+      <div class="tw"><table><thead><tr><th>File</th><th>Region</th><th>Speaker</th><th style="text-align:right">Duration</th><th>Status</th><th style="width:60px">Action</th></tr></thead><tbody id="ioc-tbody"><tr><td colspan="6"><div class="loading"><span class="spin"></span>Loading…</div></td></tr></tbody></table></div>
     </div>
     <div id="ioc-upload" style="display:none">
       <div class="panel" style="max-width:560px">
@@ -460,7 +472,7 @@ tr:hover td{background:var(--s2);}
         </select>
         <button class="btn btn-tl" id="btn-freq">Load Frequency</button>
       </div>
-      <div class="tw"><table><thead><tr><th style="width:40px">Rank</th><th>Word</th><th style="text-align:right">Frequency</th><th style="text-align:right;width:80px">Per 1M</th><th style="width:200px">Distribution</th></tr></thead><tbody id="freq-tbody"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mu)">Select a corpus and click Load Frequency</td></tr></tbody></table></div>
+      <div class="tw"><tr><thead><tr><th style="width:40px">Rank</th><th>Word</th><th style="text-align:right">Frequency</th><th style="text-align:right;width:80px">Per 1M</th><th style="width:200px">Distribution</th></tr></thead><tbody id="freq-tbody"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mu)">Select a corpus and click Load Frequency</td></tr></tbody></table></div>
     </div>
     <div id="search-sstats" style="display:none">
       <div class="g4" style="margin-bottom:24px">
@@ -521,7 +533,6 @@ function doLogout() {
 }
 
 // ── API helpers ───────────────────────────────────────────────────────────────
-// ✅ All helpers now send auth token
 function get(path) {
   return fetch(API + path, {
     headers: {'Authorization': 'Bearer ' + authToken}
@@ -570,6 +581,17 @@ function patch(path, data) {
   }).then(function(r) {
     if (r.status === 401) { doLogout(); throw new Error('Session expired'); }
     return r.json();
+  });
+}
+
+function del(path) {
+  return fetch(API + path, {
+    method: 'DELETE',
+    headers: {'Authorization': 'Bearer ' + authToken}
+  }).then(function(r) {
+    if (r.status === 401) { doLogout(); throw new Error('Session expired'); }
+    if (!r.ok) throw new Error(r.status);
+    return r.json().catch(function(){ return {}; });
   });
 }
 
@@ -694,10 +716,12 @@ function loadIncDocs() {
         +'<td style="text-align:right;font-family:var(--mono)">'+(d.word_count||0).toLocaleString()+'</td>'
         +'<td style="text-align:right;font-family:var(--mono)">'+(d.token_count||0).toLocaleString()+'</td>'
         +'<td>'+pill(d.status)+'</td>'
+        +'<td><button class="delete-icon" onclick="event.stopPropagation(); deleteINCDoc('+d.id+')">🗑 Delete</button></td>'
         +'</tr>';
-    }).join('') : '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--mu)">No documents yet</td></tr>';
+    }).join('') : '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--mu)">No documents yet</td></tr>';
     document.querySelectorAll('.doc-row').forEach(function(row){
-      row.addEventListener('click', function(){
+      row.addEventListener('click', function(e){
+        if(e.target.classList && e.target.classList.contains('delete-icon')) return;
         var docId = this.getAttribute('data-id');
         switchTab('inc', 'clean');
         document.getElementById('doc-select').value = docId;
@@ -705,7 +729,25 @@ function loadIncDocs() {
       });
     });
   }).catch(function(){
-    document.getElementById('inc-tbody').innerHTML = '<tr><td colspan="6" style="color:var(--co);padding:20px">Error loading documents</td></tr>';
+    document.getElementById('inc-tbody').innerHTML = '<tr><td colspan="7" style="color:var(--co);padding:20px">Error loading documents</td></tr>';
+  });
+}
+
+function deleteINCDoc(docId) {
+  if (!confirm('⚠️ Are you sure you want to delete this document? This action CANNOT be undone.')) return;
+  del('/api/inc/documents/'+docId).then(function() {
+    toast('Document deleted successfully');
+    if (curDocId == docId) {
+      curDocId = null;
+      document.getElementById('inc-editor').value = '';
+      document.getElementById('ocr-view').textContent = 'Select a document above to load its original text.';
+      document.getElementById('btn-mark-done').style.display = 'none';
+      document.getElementById('btn-delete-inc').style.display = 'none';
+    }
+    loadIncDocs();
+    loadDocSelect();
+  }).catch(function(e) {
+    toast('Failed to delete: '+e.message, true);
   });
 }
 
@@ -726,6 +768,7 @@ function loadDocText(docId) {
   document.getElementById('ocr-badge').textContent = '';
   document.getElementById('inc-editor').value = '';
   document.getElementById('btn-mark-done').style.display = 'none';
+  document.getElementById('btn-delete-inc').style.display = 'inline-flex';
   updateWC();
   get('/api/inc/documents/'+docId+'/text').then(function(t) {
     if (t.ocr_text && t.ocr_text.trim()) {
@@ -789,6 +832,11 @@ function addINCDoc() {
     }).catch(function(e){ toast('Error: '+e.message, true); });
 }
 
+function escapeHtml(s) { 
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 // ══════════════════════════════════════════════════════
 // EIPC
 // ══════════════════════════════════════════════════════
@@ -804,13 +852,6 @@ function loadEIPCStats() {
     document.getElementById('es-total').textContent = total.toLocaleString();
     document.getElementById('es-ver').textContent = ver.toLocaleString();
     document.getElementById('es-pend').textContent = (s.pending||0).toLocaleString();
-    if (s.by_domain && s.by_domain.length) {
-      barChart('e-domain-bars', s.by_domain.map(function(d){return{l:d.domain||'Unknown',v:parseInt(d.pair_count)};}), 'var(--pu)');
-    }
-    var avgHtml = '';
-    if (s.avg_en_words) avgHtml += '<div style="font-size:13px;margin-bottom:6px">English avg: <span style="font-family:var(--mono);font-weight:500;color:var(--pu)">'+s.avg_en_words+' words</span></div><div style="height:5px;background:var(--s2);border-radius:3px;margin-bottom:14px"><div style="height:100%;width:'+Math.min(parseFloat(s.avg_en_words)/20*100,100)+'%;background:var(--pu);border-radius:3px"></div></div>';
-    if (s.avg_zu_words) avgHtml += '<div style="font-size:13px;margin-bottom:6px">IsiZulu avg: <span style="font-family:var(--mono);font-weight:500;color:var(--tl)">'+s.avg_zu_words+' words</span></div><div style="height:5px;background:var(--s2);border-radius:3px"><div style="height:100%;width:'+Math.min(parseFloat(s.avg_zu_words)/20*100,100)+'%;background:var(--tl);border-radius:3px"></div></div>';
-    document.getElementById('e-avg-len').innerHTML = avgHtml || '<div style="color:var(--mu);font-size:13px">No aligned pairs yet</div>';
   }).catch(function(){});
 }
 
@@ -819,32 +860,30 @@ function loadPairs() {
   var q = '/api/eipc/pairs?skip='+skip+'&limit=50';
   if (pairStatus !== 'all') q += '&status='+pairStatus;
   if (pairSearchQ) q += '&search='+encodeURIComponent(pairSearchQ);
-  document.getElementById('review-tbody').innerHTML = '<tr><td colspan="5"><div class="loading"><span class="spin"></span>Loading…</div></td></tr>';
+  document.getElementById('review-tbody').innerHTML = '<tr><td colspan="5"><div class="loading"><span class="spin"></span>Loading…</div></div></tr>';
   get(q).then(function(data) {
     document.getElementById('pair-total').textContent = data.total.toLocaleString()+' total';
     document.getElementById('pair-page-info').textContent = 'Page '+(pairPage+1)+' of '+Math.ceil(data.total/50);
     if (!data.pairs.length) {
-      document.getElementById('review-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mu)">No pairs found</td></tr>';
+      document.getElementById('review-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mu)">No pairs found</div></tr>';
       return;
     }
     document.getElementById('review-tbody').innerHTML = data.pairs.map(function(p){
       return '<tr class="'+p.status+'" id="pr-'+p.id+'">'
         +'<td style="font-family:var(--mono);color:var(--mu)">'+p.id+'</td>'
-        +'<td><input class="ie" value="'+escHtml(p.en_text)+'" data-id="'+p.id+'" data-field="en_text"></td>'
-        +'<td><input class="ie" value="'+escHtml(p.zu_text)+'" data-id="'+p.id+'" data-field="zu_text"></td>'
+        +'<td><input class="ie" value="'+escapeHtml(p.en_text)+'" data-id="'+p.id+'" data-field="en_text"></td>'
+        +'<td><input class="ie" value="'+escapeHtml(p.zu_text)+'" data-id="'+p.id+'" data-field="zu_text"></td>'
         +'<td><span class="pill '+(p.status==='verified'?'p-ver':p.status==='flagged'?'p-flag':'p-pend')+'" id="ps-'+p.id+'">'+p.status+'</span></td>'
         +'<td style="display:flex;gap:4px;padding-top:6px">'
         +'<button class="btn btn-sm p-appr" data-id="'+p.id+'">✓</button>'
         +'<button class="btn btn-sm p-flag" data-id="'+p.id+'">⚑</button>'
-        +'</td></tr>';
+        +'<button class="btn btn-sm btn-red p-del" data-id="'+p.id+'" style="background:#c23b22">🗑</button>'
+        +'</div></tr>';
     }).join('');
     document.querySelectorAll('.p-appr').forEach(function(btn){
       btn.addEventListener('click', function(){
         var id = parseInt(this.getAttribute('data-id'));
         patch('/api/eipc/pairs/'+id, {status:'verified'}).then(function(){
-          document.getElementById('pr-'+id).className='verified';
-          document.getElementById('ps-'+id).className='pill p-ver';
-          document.getElementById('ps-'+id).textContent='verified';
           toast('Pair '+id+' verified'); loadEIPCStats();
         });
       });
@@ -853,11 +892,19 @@ function loadPairs() {
       btn.addEventListener('click', function(){
         var id = parseInt(this.getAttribute('data-id'));
         patch('/api/eipc/pairs/'+id, {status:'flagged'}).then(function(){
-          document.getElementById('pr-'+id).className='flagged';
-          document.getElementById('ps-'+id).className='pill p-flag';
-          document.getElementById('ps-'+id).textContent='flagged';
           toast('Pair '+id+' flagged');
         });
+      });
+    });
+    document.querySelectorAll('.p-del').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = parseInt(this.getAttribute('data-id'));
+        if(confirm('Delete pair #'+id+'?')) {
+          del('/api/eipc/pairs/'+id).then(function(){
+            toast('Pair '+id+' deleted');
+            loadPairs();
+          }).catch(function(e){ toast('Delete failed: '+e.message, true); });
+        }
       });
     });
     document.querySelectorAll('.ie').forEach(function(inp){
@@ -868,10 +915,8 @@ function loadPairs() {
         patch('/api/eipc/pairs/'+id, body).then(function(){ toast('Pair '+id+' updated'); });
       });
     });
-  }).catch(function(e){ document.getElementById('review-tbody').innerHTML='<tr><td colspan="5" style="color:var(--co);padding:20px">Error: '+e.message+'</td></tr>'; });
+  }).catch(function(e){ document.getElementById('review-tbody').innerHTML='<tr><td colspan="5" style="color:var(--co);padding:20px">Error: '+e.message+'</div></tr>'; });
 }
-
-function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function uploadEN() {
   var file = document.getElementById('en-file').files[0];
@@ -912,23 +957,13 @@ function runAlign() {
   if (!enDocId) { toast('Upload both files first', true); return; }
   document.getElementById('align-prog').style.display = 'block';
   document.getElementById('align-btn').disabled = true;
-  var p = 0;
-  var msgs = ['Splitting sentences…','Computing similarity…','Matching pairs…','Ranking by confidence…','Saving to database…'];
-  var iv = setInterval(function(){
-    p += 8; document.getElementById('align-pbar').style.width=p+'%';
-    document.getElementById('align-msg').textContent = msgs[Math.min(Math.floor(p/22),4)];
-    if (p>=90) clearInterval(iv);
-  }, 100);
   post('/api/eipc/align/'+enDocId, {}).then(function(r) {
-    clearInterval(iv);
-    document.getElementById('align-pbar').style.width='100%';
-    document.getElementById('align-msg').textContent = 'Done! '+r.pairs_created+' pairs created.';
-    setTimeout(function(){document.getElementById('align-prog').style.display='none';}, 1500);
+    document.getElementById('align-prog').style.display='none';
     document.getElementById('align-summary').textContent = r.pairs_created+' pairs — switch to Review Pairs tab';
-    loadAlignedPairs(enDocId); loadEIPCStats();
+    loadAlignedPairs(enDocId);
+    loadEIPCStats();
     toast('Alignment complete — '+r.pairs_created+' pairs saved');
   }).catch(function(e){
-    clearInterval(iv);
     document.getElementById('align-prog').style.display='none';
     document.getElementById('align-btn').disabled=false;
     toast('Alignment failed: '+e.message, true);
@@ -937,28 +972,26 @@ function runAlign() {
 
 function loadAlignedPairs(docId) {
   get('/api/eipc/pairs?doc_id='+docId+'&limit=50').then(function(data) {
-    if (!data.pairs.length) { document.getElementById('align-tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--mu)">No pairs yet</td></tr>'; return; }
+    if (!data.pairs.length) { document.getElementById('align-tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--mu)">No pairs yet</div></tr>'; return; }
     document.getElementById('align-tbody').innerHTML = data.pairs.map(function(p){
       var c=p.confidence?Math.round(p.confidence*100):0;
       var col=c>=90?'var(--gn)':c>=80?'var(--am)':'var(--co)';
       return '<tr class="'+p.status+'" id="ap-'+p.id+'">'
-        +'<td style="font-family:var(--mono);color:var(--mu)">'+p.id+'</td>'
-        +'<td><input class="ie" value="'+escHtml(p.en_text)+'"></td>'
-        +'<td><input class="ie" value="'+escHtml(p.zu_text)+'"></td>'
-        +'<td style="font-family:var(--mono);color:'+col+'">'+c+'%</td>'
-        +'<td><span class="pill p-pend" id="aps-'+p.id+'">'+p.status+'</span></td>'
+        +'<td style="font-family:var(--mono);color:var(--mu)">'+p.id+'</div>'
+        +'<td><input class="ie" value="'+escapeHtml(p.en_text)+'"></div>'
+        +'<td><input class="ie" value="'+escapeHtml(p.zu_text)+'"></div>'
+        +'<td style="font-family:var(--mono);color:'+col+'">'+c+'%</div>'
+        +'<td><span class="pill p-pend" id="aps-'+p.id+'">'+p.status+'</span></div>'
         +'<td style="display:flex;gap:4px;padding-top:6px">'
         +'<button class="btn btn-sm aa-appr" data-id="'+p.id+'">✓</button>'
         +'<button class="btn btn-sm aa-flag" data-id="'+p.id+'">⚑</button>'
-        +'</td></tr>';
+        +'</div></tr>';
     }).join('');
     document.querySelectorAll('.aa-appr').forEach(function(btn){
       btn.addEventListener('click', function(){
         var id=parseInt(this.getAttribute('data-id'));
         patch('/api/eipc/pairs/'+id,{status:'verified'}).then(function(){
-          document.getElementById('ap-'+id).className='verified';
-          var sp=document.getElementById('aps-'+id); sp.className='pill p-ver'; sp.textContent='verified';
-          toast('Pair '+id+' approved'); loadEIPCStats();
+          toast('Pair '+id+' approved');
         });
       });
     });
@@ -966,8 +999,6 @@ function loadAlignedPairs(docId) {
       btn.addEventListener('click', function(){
         var id=parseInt(this.getAttribute('data-id'));
         patch('/api/eipc/pairs/'+id,{status:'flagged'}).then(function(){
-          document.getElementById('ap-'+id).className='flagged';
-          var sp=document.getElementById('aps-'+id); sp.className='pill p-flag'; sp.textContent='flagged';
           toast('Pair '+id+' flagged');
         });
       });
@@ -982,21 +1013,44 @@ function loadIOCFiles() {
   get('/api/ioc/files').then(function(files) {
     var sel = document.getElementById('ioc-file-select');
     sel.innerHTML = '<option value="">— select audio file —</option>'
-      + files.map(function(f){ return '<option value="'+f.id+'">'+f.filename+' ('+f.region+') — '+f.status+'</option>'; }).join('');
+      + files.map(function(f){ return '<option value="'+f.id+'">'+escapeHtml(f.filename)+' ('+f.region+') — '+f.status+'</option>'; }).join('');
     document.getElementById('ioc-tbody').innerHTML = files.length ? files.map(function(f){
       var dur = f.duration_seconds ? Math.floor(f.duration_seconds/60)+':'+(f.duration_seconds%60<10?'0':'')+f.duration_seconds%60 : '—';
-      return '<tr><td style="font-family:var(--mono);font-size:12px">'+f.filename+'</td><td>'+(f.region||'—')+'</td><td>'+(f.speaker_gender||'—')+(f.speaker_age_range?' / '+f.speaker_age_range:'')+'</td><td style="text-align:right;font-family:var(--mono)">'+dur+'</td><td>'+pill(f.status)+'</td></tr>';
-    }).join('') : '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mu)">No audio files yet</td></tr>';
-  }).catch(function(){ document.getElementById('ioc-tbody').innerHTML='<tr><td colspan="5" style="color:var(--co);padding:20px">Error loading files</td></tr>'; });
+      return '<tr id="ioc-row-'+f.id+'">'
+        +'<td style="font-family:var(--mono);font-size:12px">'+escapeHtml(f.filename)+'</div>'
+        +'<td>'+(f.region||'—')+'</div>'
+        +'<td>'+(f.speaker_gender||'—')+(f.speaker_age_range?' / '+f.speaker_age_range:'')+'</div>'
+        +'<td style="text-align:right;font-family:var(--mono)">'+dur+'</div>'
+        +'<td>'+pill(f.status)+'</div>'
+        +'<td><button class="delete-icon" onclick="deleteIOCFile('+f.id+')">🗑 Delete</button></div>'
+        +'</tr>';
+    }).join('') : '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--mu)">No audio files yet</div></tr>';
+  }).catch(function(){ document.getElementById('ioc-tbody').innerHTML='<tr><td colspan="6" style="color:var(--co);padding:20px">Error loading files</div></tr>'; });
+}
+
+function deleteIOCFile(fileId) {
+  if (!confirm('⚠️ Are you sure you want to delete this audio file and its transcript? This CANNOT be undone.')) return;
+  del('/api/ioc/files/'+fileId).then(function() {
+    toast('Audio file deleted successfully');
+    if (curIocFileId == fileId) {
+      curIocFileId = null;
+      document.getElementById('ioc-editor-card').innerHTML = '<div style="text-align:center;padding:30px;color:var(--mu)">Select an audio file above to start transcribing</div>';
+      document.getElementById('btn-delete-ioc').style.display = 'none';
+    }
+    loadIOCFiles();
+  }).catch(function(e) {
+    toast('Failed to delete: '+e.message, true);
+  });
 }
 
 function loadIOCTranscript(fileId) {
   curIocFileId = fileId;
+  document.getElementById('btn-delete-ioc').style.display = 'inline-flex';
   get('/api/ioc/files').then(function(files){
     var f = files.find(function(x){return x.id===parseInt(fileId);});
     if (!f) return;
     document.getElementById('ioc-editor-card').innerHTML =
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="font-weight:600;font-size:15px">'+f.filename+'</div>'+pill(f.status)+'</div>'
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="font-weight:600;font-size:15px">'+escapeHtml(f.filename)+'</div>'+pill(f.status)+'</div>'
       +'<div class="atags"><span class="atag">📍 '+(f.region||'—')+'</span><span class="atag">👤 '+(f.speaker_gender||'—')+(f.speaker_age_range?' / '+f.speaker_age_range:'')+'</span><span class="atag">🎤 '+(f.topic||'—')+'</span></div>'
       +'<div class="tpair">'
       +'<div class="txbox"><div class="txlbl">Auto-transcription (AI draft)</div><textarea id="auto-tx" readonly placeholder="No auto-transcription yet"></textarea></div>'
@@ -1048,29 +1102,30 @@ function runKWIC() {
   document.getElementById('kwic-results').innerHTML = '<div class="loading"><span class="spin"></span>Searching…</div>';
   get('/api/search/kwic?q='+encodeURIComponent(q)+'&corpus='+corpus+'&limit=50')
     .then(function(data) {
-      document.getElementById('kwic-count').innerHTML = data.total+' results for <strong>"'+escHtml(q)+'"</strong>';
+      document.getElementById('kwic-count').innerHTML = data.total+' results for <strong>"'+escapeHtml(q)+'"</strong>';
       if (!data.results.length) { document.getElementById('kwic-results').innerHTML='<div style="color:var(--mu);font-size:13px;padding:20px 0">No results found.</div>'; return; }
       document.getElementById('kwic-results').innerHTML = data.results.map(function(r){
-        return '<div class="kr"><span class="kl">'+escHtml(r.left)+'</span><span class="kk">'+escHtml(r.keyword)+'</span><span class="krr">'+escHtml(r.right)+'</span><span class="ks">'+escHtml(r.source)+'</span></div>';
+        return '<div class="kr"><span class="kl">'+escapeHtml(r.left)+'</span><span class="kk">'+escapeHtml(r.keyword)+'</span><span class="krr">'+escapeHtml(r.right)+'</span><span class="ks">'+escapeHtml(r.source)+'</span></div>';
       }).join('');
     }).catch(function(e){ document.getElementById('kwic-results').innerHTML='<div style="color:var(--co);font-size:13px">Error: '+e.message+'</div>'; });
 }
 
 function loadFrequency() {
   var corpus = document.getElementById('freq-corpus').value;
-  document.getElementById('freq-tbody').innerHTML = '<tr><td colspan="5"><div class="loading"><span class="spin"></span>Computing…</div></td></tr>';
+  document.getElementById('freq-tbody').innerHTML = '<tr><td colspan="5"><div class="loading"><span class="spin"></span>Computing…</div></div></tr>';
   get('/api/search/frequency?corpus='+corpus+'&top_n=50')
     .then(function(data) {
-      if (!data.length) { document.getElementById('freq-tbody').innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mu)">No text yet</td></tr>'; return; }
+      if (!data.length) { document.getElementById('freq-tbody').innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--mu)">No text yet</div><tr>'; return; }
       var max = data[0].frequency;
       document.getElementById('freq-tbody').innerHTML = data.map(function(r){
-        return '<tr><td style="font-family:var(--mono);color:var(--mu)">'+r.rank+'</td>'
-          +'<td style="font-family:var(--mono);font-weight:500;color:var(--tl)">'+r.word+'</td>'
-          +'<td style="text-align:right;font-family:var(--mono)">'+r.frequency.toLocaleString()+'</td>'
-          +'<td style="text-align:right;font-family:var(--mono);color:var(--mu)">'+r.per_million.toLocaleString()+'</td>'
-          +'<td><span style="height:5px;background:var(--pu);border-radius:3px;display:inline-block;width:'+Math.round(r.frequency/max*180)+'px"></span></td></tr>';
+        return '<tr><td style="font-family:var(--mono);color:var(--mu)">'+r.rank+'</div>'
+          +'<td style="font-family:var(--mono);font-weight:500;color:var(--tl)">'+escapeHtml(r.word)+'</div>'
+          +'<td style="text-align:right;font-family:var(--mono)">'+r.frequency.toLocaleString()+'</div>'
+          +'<td style="text-align:right;font-family:var(--mono);color:var(--mu)">'+r.per_million.toLocaleString()+'</div>'
+          +'<td><span style="height:5px;background:var(--pu);border-radius:3px;display:inline-block;width:'+Math.round(r.frequency/max*180)+'px"></span></div>'
+          +'</tr>';
       }).join('');
-    }).catch(function(e){ document.getElementById('freq-tbody').innerHTML='<tr><td colspan="5" style="color:var(--co);padding:20px">Error: '+e.message+'</td></tr>'; });
+    }).catch(function(e){ document.getElementById('freq-tbody').innerHTML='<tr><td colspan="5" style="color:var(--co);padding:20px">Error: '+e.message+'</div></tr>'; });
 }
 
 function loadCorpusStats() {
@@ -1079,11 +1134,6 @@ function loadCorpusStats() {
     document.getElementById('ss-pairs').textContent = s.verified_pairs.toLocaleString();
     document.getElementById('ss-trans').textContent = s.approved_transcripts.toLocaleString();
     get('/api/inc/stats').then(function(inc){ document.getElementById('ss-docs').textContent = inc.total_docs; });
-    if (s.by_domain && s.by_domain.length) {
-      barChart('ss-domain', s.by_domain.map(function(d){return{l:d.domain||'Unknown',v:parseInt(d.tokens)};}), 'var(--tl)');
-    } else {
-      document.getElementById('ss-domain').innerHTML = '<div style="color:var(--mu);font-size:13px">No data yet</div>';
-    }
   }).catch(function(){});
 }
 
@@ -1097,10 +1147,9 @@ function wire() {
     curDocId = null;
     document.getElementById('doc-select').value = '';
     document.getElementById('ocr-view').textContent = 'Select a document above to load its original text.';
-    document.getElementById('ocr-badge').textContent = '';
-    document.getElementById('ocr-score').textContent = '';
     document.getElementById('inc-editor').value = '';
     document.getElementById('btn-mark-done').style.display = 'none';
+    document.getElementById('btn-delete-inc').style.display = 'none';
     updateWC();
     loadDocSelect();
   });
@@ -1116,9 +1165,8 @@ function wire() {
 
   document.getElementById('btn-refresh').addEventListener('click', loadDashboard);
   document.getElementById('inc-editor').addEventListener('input', updateWC);
-
   document.getElementById('btn-save-inc').addEventListener('click', saveINC);
-
+  document.getElementById('btn-delete-inc').addEventListener('click', function(){ if(curDocId) deleteINCDoc(curDocId); });
   document.getElementById('btn-mark-done').addEventListener('click', function(){
     if (!curDocId) return;
     patch('/api/inc/documents/'+curDocId, {status:'completed'}).then(function(){
@@ -1127,7 +1175,6 @@ function wire() {
       loadDocSelect();
     }).catch(function(e){ toast('Error: '+e.message, true); });
   });
-
   document.getElementById('btn-autofix').addEventListener('click', function(){
     var text = document.getElementById('inc-editor').value;
     if (!text.trim()) { toast('Paste text in the right panel first', true); return; }
@@ -1136,22 +1183,19 @@ function wire() {
     updateWC();
     toast('Auto-fix applied — review changes carefully');
   });
-
   document.getElementById('doc-select').addEventListener('change', function(){
     var val = this.value;
     if (!val) {
       curDocId = null;
       document.getElementById('ocr-view').textContent = 'Select a document above to load its original text.';
-      document.getElementById('ocr-badge').textContent = '';
-      document.getElementById('ocr-score').textContent = '';
       document.getElementById('inc-editor').value = '';
       document.getElementById('btn-mark-done').style.display = 'none';
+      document.getElementById('btn-delete-inc').style.display = 'none';
       updateWC();
       return;
     }
     loadDocText(val);
   });
-
   document.getElementById('inc-uz').addEventListener('click', function(){ document.getElementById('inc-file').click(); });
   document.getElementById('inc-file').addEventListener('change', function(){
     if (this.files[0]){ var n=document.getElementById('inc-fname'); n.textContent=this.files[0].name; n.style.display='block'; document.getElementById('inc-uz').classList.add('loaded'); }
@@ -1159,7 +1203,6 @@ function wire() {
   document.getElementById('btn-add-inc').addEventListener('click', addINCDoc);
   document.getElementById('inc-search').addEventListener('input', loadIncDocs);
   document.getElementById('inc-filter').addEventListener('change', loadIncDocs);
-
   document.getElementById('en-zone').addEventListener('click', function(){ document.getElementById('en-file').click(); });
   document.getElementById('en-file').addEventListener('change', uploadEN);
   document.getElementById('zu-zone').addEventListener('click', function(){ if(!enDocId){toast('Upload the English file first',true);return;} document.getElementById('zu-file').click(); });
@@ -1177,16 +1220,15 @@ function wire() {
   });
   document.getElementById('btn-prev-pairs').addEventListener('click', function(){ if(pairPage>0){pairPage--;loadPairs();} });
   document.getElementById('btn-next-pairs').addEventListener('click', function(){ pairPage++; loadPairs(); });
-
   document.getElementById('ioc-file-select').addEventListener('change', function(){ if(this.value) loadIOCTranscript(this.value); });
   document.getElementById('btn-approve-seg').addEventListener('click', approveSegment);
+  document.getElementById('btn-delete-ioc').addEventListener('click', function(){ if(curIocFileId) deleteIOCFile(curIocFileId); });
   document.getElementById('btn-elan').addEventListener('click', function(){ toast('ELAN export — coming soon'); });
   document.getElementById('audio-uz').addEventListener('click', function(){ document.getElementById('audio-file').click(); });
   document.getElementById('audio-file').addEventListener('change', function(){
     if(this.files[0]){ var n=document.getElementById('audio-fname'); n.textContent=this.files[0].name; n.style.display='block'; document.getElementById('audio-uz').classList.add('loaded'); }
   });
   document.getElementById('btn-upload-audio').addEventListener('click', uploadAudio);
-
   document.getElementById('btn-kwic').addEventListener('click', runKWIC);
   document.getElementById('kwic-input').addEventListener('keydown', function(e){ if(e.key==='Enter') runKWIC(); });
   document.querySelectorAll('[data-corpus]').forEach(function(c){
@@ -1198,21 +1240,16 @@ function wire() {
   document.getElementById('btn-freq').addEventListener('click', loadFrequency);
 }
 
-// ══════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════
 function init() {
   document.getElementById('today-lbl').textContent = new Date().toLocaleDateString('en-ZA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   wire();
   loadDashboard();
 }
 
-// ✅ Check if already logged in — skip login screen if token exists
 if (sessionStorage.getItem('corpus_token')) {
   document.getElementById('login-screen').style.display = 'none';
   init();
 }
-// Otherwise login screen stays visible — user must sign in first
 </script>
 </body>
 </html>
