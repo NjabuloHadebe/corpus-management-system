@@ -625,6 +625,138 @@ def kwic_search(q: str = Query(..., min_length=2), corpus: str = Query(default="
     finally:
         conn.close()
 
+# ══════════════════════════════════════════════════════════════════════════════
+# DELETE ENDPOINTS (Add these to your backend)
+# ══════════════════════════════════════════════════════════════════════════════
+
+@app.delete("/api/inc/documents/{doc_id}")
+def delete_inc_document(doc_id: int, token: str = Depends(verify_token)):
+    """Delete an INC document and all its associated texts"""
+    conn = get_db()
+    try:
+        cur = conn.cursor()
+        # First check if document exists
+        cur.execute("SELECT id, title FROM inc_documents WHERE id=%s", (doc_id,))
+        doc = cur.fetchone()
+        if not doc:
+            raise HTTPException(404, f"Document {doc_id} not found")
+        
+        # Delete related texts first (foreign key constraint)
+        cur.execute("DELETE FROM inc_texts WHERE document_id=%s", (doc_id,))
+        # Then delete the document
+        cur.execute("DELETE FROM inc_documents WHERE id=%s", (doc_id,))
+        conn.commit()
+        
+        return {"message": f"Document '{doc['title']}' deleted successfully", "id": doc_id}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(500, f"Delete failed: {str(e)}")
+    finally:
+        conn.close()
+
+
+@app.delete("/api/eipc/documents/{doc_id}")
+def delete_eipc_document(doc_id: int, token: str = Depends(verify_token)):
+    """Delete an EIPC document and all its associated pairs"""
+    conn = get_db()
+    try:
+        cur = conn.cursor()
+        # Check if document exists
+        cur.execute("SELECT id, title FROM eipc_documents WHERE id=%s", (doc_id,))
+        doc = cur.fetchone()
+        if not doc:
+            raise HTTPException(404, f"Document {doc_id} not found")
+        
+        # Delete all pairs associated with this document
+        cur.execute("DELETE FROM eipc_pairs WHERE source_doc_id=%s", (doc_id,))
+        # Delete the document
+        cur.execute("DELETE FROM eipc_documents WHERE id=%s", (doc_id,))
+        conn.commit()
+        
+        return {"message": f"Document '{doc['title']}' and its {cur.rowcount} pairs deleted", "id": doc_id}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(500, f"Delete failed: {str(e)}")
+    finally:
+        conn.close()
+
+
+@app.delete("/api/eipc/pairs/{pair_id}")
+def delete_eipc_pair(pair_id: int, token: str = Depends(verify_token)):
+    """Delete a single EIPC pair"""
+    conn = get_db()
+    try:
+        cur = conn.cursor()
+        # Check if pair exists
+        cur.execute("SELECT id FROM eipc_pairs WHERE id=%s", (pair_id,))
+        if not cur.fetchone():
+            raise HTTPException(404, f"Pair {pair_id} not found")
+        
+        cur.execute("DELETE FROM eipc_pairs WHERE id=%s", (pair_id,))
+        conn.commit()
+        
+        return {"message": f"Pair {pair_id} deleted successfully", "id": pair_id}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(500, f"Delete failed: {str(e)}")
+    finally:
+        conn.close()
+
+
+@app.delete("/api/eipc/pairs/bulk")
+def delete_eipc_pairs_bulk(pair_ids: List[int], token: str = Depends(verify_token)):
+    """Delete multiple EIPC pairs at once"""
+    conn = get_db()
+    try:
+        cur = conn.cursor()
+        if not pair_ids:
+            raise HTTPException(400, "No pair IDs provided")
+        
+        placeholders = ','.join(['%s'] * len(pair_ids))
+        cur.execute(f"DELETE FROM eipc_pairs WHERE id IN ({placeholders})", pair_ids)
+        conn.commit()
+        
+        return {"message": f"{cur.rowcount} pairs deleted successfully", "deleted_count": cur.rowcount}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(500, f"Bulk delete failed: {str(e)}")
+    finally:
+        conn.close()
+
+
+@app.delete("/api/ioc/files/{file_id}")
+def delete_ioc_file(file_id: int, token: str = Depends(verify_token)):
+    """Delete an IOC audio file and its transcript"""
+    conn = get_db()
+    try:
+        cur = conn.cursor()
+        # Check if file exists
+        cur.execute("SELECT id, filename, filepath FROM ioc_files WHERE id=%s", (file_id,))
+        file_record = cur.fetchone()
+        if not file_record:
+            raise HTTPException(404, f"Audio file {file_id} not found")
+        
+        # Delete the transcript first (foreign key)
+        cur.execute("DELETE FROM ioc_transcripts WHERE audio_file_id=%s", (file_id,))
+        # Delete the file record
+        cur.execute("DELETE FROM ioc_files WHERE id=%s", (file_id,))
+        conn.commit()
+        
+        # Optionally delete the physical file
+        filepath = file_record.get('filepath')
+        if filepath and os.path.exists(filepath):
+            try:
+                os.remove(filepath)
+            except Exception:
+                pass  # Log but don't fail if file can't be deleted
+        
+        return {"message": f"Audio file '{file_record['filename']}' deleted successfully", "id": file_id}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(500, f"Delete failed: {str(e)}")
+    finally:
+        conn.close()
+
 
 @app.get("/api/search/frequency")
 def word_frequency(corpus: str = Query(default="inc"), top_n: int = Query(default=50, le=200),
